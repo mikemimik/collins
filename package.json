@@ -1,0 +1,25 @@
+{
+  "name": "collins",
+  "version": "0.0.1",
+  "description": "The glue for holding service-gears together.",
+  "main": "libs/Collins.js",
+  "scripts": {
+    "start": "node libs/Collins.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikemimik/collins.git"
+  },
+  "keywords": [
+    "bot",
+    "IoT",
+    "service"
+  ],
+  "author": "Michael Perrotte",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/mikemimik/collins/issues"
+  },
+  "homepage": "https://github.com/mikemimik/collins#readme"
+}
