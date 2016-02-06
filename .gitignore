@@ -1,0 +1,8 @@
+# Dependancies
+node_modules/
+
+# Editor
+typings/
+jsconfig.json
+
+# Project specific
