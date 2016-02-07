@@ -4,7 +4,7 @@
   "description": "The glue for holding service-gears together.",
   "main": "libs/Collins.js",
   "scripts": {
-    "start": "node libs/Collins.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
