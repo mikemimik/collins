@@ -21,5 +21,10 @@
   "bugs": {
     "url": "https://github.com/mikemimik/collins/issues"
   },
-  "homepage": "https://github.com/mikemimik/collins#readme"
+  "homepage": "https://github.com/mikemimik/collins#readme",
+  "dependencies": {
+    "async": "^1.5.2",
+    "eventemitter2": "^0.4.14",
+    "lodash": "^4.2.1"
+  }
 }
