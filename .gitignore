@@ -1,5 +1,6 @@
 # Dependancies
 node_modules/
+configs/
 
 # Editor
 typings/
