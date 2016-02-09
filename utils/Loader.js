@@ -22,34 +22,58 @@ class Loader {
 
         // INFO: sort by split length, so gears get required before cogs
         files = _.sortBy(files, (f) => f.split('-').length);
-        async.each(
-          files,
-          (file, done) => {
-            if (file.split('.')[0] === 'index') {
-              masterConfig.main = require(path.join(configDir, file));
+        async.each(files, (file, done) => {
+          if (file.split('.')[0] === 'index') {
+            masterConfig.main = require(path.join(configDir, file));
+          } else {
+            if (file.split('-').length === 2) {
+              let serviceName = file.split('-')[1].split('.')[0];
+              if (!masterConfig.services) { masterConfig.services = {}; }
+              masterConfig.services[serviceName] = require(path.join(configDir, file));
             } else {
-              if (file.split('-').length === 2) {
-                let serviceName = file.split('-')[1].split('.')[0];
-                if (!masterConfig.services) { masterConfig.services = {}; }
-                masterConfig.services[serviceName] = require(path.join(configDir, file));
-              } else {
-                let serviceName = file.split('-')[1];
-                let cogName = file.split('-')[2].split('.')[0];
-                if (!masterConfig.services[serviceName].cogs) {
-                  masterConfig.services[serviceName].cogs = {};
-                }
-                masterConfig
-                  .services[serviceName]
-                  .cogs[cogName] = require(path.join(configDir, file));
+              let serviceName = file.split('-')[1];
+              let cogName = file.split('-')[2].split('.')[0];
+              if (!masterConfig.services[serviceName].cogs) {
+                masterConfig.services[serviceName].cogs = {};
               }
+              masterConfig
+                .services[serviceName]
+                .cogs[cogName] = require(path.join(configDir, file));
             }
-            done(null);
-          }, (err) => {
-            this.config = masterConfig;
-            next(err);
           }
-        );
-      }
+          done(null);
+        }, (err) => {
+          this.config = masterConfig;
+
+          // INFO: if we received an error here, we have a broken config file
+          if (err) { next(err); }
+
+          // TODO: propogate main config into service configs
+          let serviceConfigKeys = _.keys(this.config.services);
+          async.each(serviceConfigKeys, (serviceConfigKey, each_done) => {
+            async.forEachOf(this.config.services[serviceConfigKey], (value, key, eachOf_done) => {
+              if (value === 'inherit') {
+                if (key === 'username' || key === 'name') {
+                  this.config
+                    .services[serviceConfigKey][key] = this.config.main.name;
+                } else {
+                  this.config
+                    .services[serviceConfigKey][key] = this.config.main[key];
+                }
+              }
+              eachOf_done(null);
+            }, (eachOf_err) => {
+
+              // INFO: all service properties have been inherited
+              each_done(null);
+            }); // INFO: async.forEachof:done over properties
+          }, (each_err) => {
+
+            // INFO: all serviceConfigs have been processed for inheritance
+            next(null);
+          }); // INFO: async.each:done over serviceConfigs
+        }); // INFO: async.each:done over files
+      } // INFO: end of else
     });
   }
 
