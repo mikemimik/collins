@@ -79,9 +79,13 @@ class Loader {
 
   static initServices(next) {
     console.log('>>', 'Loader', 'initServices', 'this:', this); // TESTING
-    async.each(
-      this.services,
-      (Service, done) => {
+    console.log('>>', 'TESTING', 'lenght', this.services.length);
+    console.log('>>', 'TESTING', 'object', this.services);
+    if (this.services.length === 0) {
+      let error = new CollinsError('ServiceError', { details: 'No services attached.' });
+      next(error);
+    } else {
+      async.each(this.services, (Service, done) => {
         // console.log('>>', 'Loader', 'initServ', 'Service:', Service); // TESTING
         let regEx = /(?=[A-Z])/;
         let configFile = Service.name
@@ -106,8 +110,8 @@ class Loader {
         });
       }, (err) => {
         next(err);
-      }
-    );
+      });
+    }
   }
 
   static connectServices(next) {
