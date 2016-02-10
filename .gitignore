@@ -1,9 +1,19 @@
 # Dependancies
 node_modules/
 configs/
+.npm/
+ssl/
 
 # Editor
 typings/
 jsconfig.json
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Coverage
+coverage
 
 # Project specific
