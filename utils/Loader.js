@@ -84,7 +84,11 @@ class Loader {
       (Service, done) => {
         // console.log('>>', 'Loader', 'initServ', 'Service:', Service); // TESTING
         let regEx = /(?=[A-Z])/;
-        let configFile = Service.name.split(regEx).map(x => x.toLowerCase()).join('-') + '.js';
+        let configFile = Service.name
+          .split(regEx)
+          .map(x => x.toLowerCase())
+          .filter(n => n !== 'collins')
+          .join('.') + '.config.js';
         configFile = path.join(__dirname, '..', 'configs', configFile);
         fs.stat(configFile, (err, stats) => {
           if (err) {
