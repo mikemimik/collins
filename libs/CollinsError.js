@@ -18,7 +18,8 @@ class ExtendableError extends Error {
 class CollinsError extends ExtendableError {
   constructor(type, data) {
     super('constructor');
-    this.data = data;
+    this.data = (data) ? data : {};
+    this.type = type;
     this.message = '\'' + type + '\' error message received';
     let reason = data.details || data.reason;
     if (reason) {
