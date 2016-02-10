@@ -1,6 +1,6 @@
 # Dependancies
 node_modules/
-configs/
+*.config.js
 .npm/
 ssl/
 
