@@ -6,11 +6,13 @@ const config = require('./configs');
 
 // INFO: Collins service-gear
 const mumbleGear = require('collins-mumble');
+const slackGear = require('collins-slack');
 
 // INFO: create new instance of Collins
 let collins = new Collins(config);
 
 collins.use(mumbleGear);
+collins.use(slackGear);
 
 // INFO: no arrow functions (need context intact)
 collins.on('error:*', function(error) {
