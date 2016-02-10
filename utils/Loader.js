@@ -21,18 +21,18 @@ class Loader {
       } else {
 
         // INFO: sort by split length, so gears get required before cogs
-        files = _.sortBy(files, (f) => f.split('-').length);
+        files = _.sortBy(files, (f) => f.split('.').length);
         async.each(files, (file, done) => {
           if (file.split('.')[0] === 'index') {
             masterConfig.main = require(path.join(configDir, file));
           } else {
-            if (file.split('-').length === 2) {
-              let serviceName = file.split('-')[1].split('.')[0];
+            if (file.split('.').length === 3) {
+              let serviceName = file.split('.')[0];
               if (!masterConfig.services) { masterConfig.services = {}; }
               masterConfig.services[serviceName] = require(path.join(configDir, file));
             } else {
-              let serviceName = file.split('-')[1];
-              let cogName = file.split('-')[2].split('.')[0];
+              let serviceName = file.split('.')[0];
+              let cogName = file.split('.')[1];
               if (!masterConfig.services[serviceName].cogs) {
                 masterConfig.services[serviceName].cogs = {};
               }
