@@ -26,16 +26,19 @@ describe('Loader', () => {
       done(err);
     });
   });
+
+  describe('#initConfig()', () => {
+    it('should error if `configDir` is incorrect');
+    it('should require index config');
+    it('should require all service-gear configs');
+    it('should require all service-cog configs');
+    it('should error if any require fails');
+    it('should properly propagate config.main into config.services');
+    it('should create masterConfig file @ this.config');
+  });
+
   describe('#initServices()', () => {
-    it('should throw error if no services attached', (done) => {
-      assert.throws(
-        Loader.initServices.bind(collins, (err) => {
-          console.log('>>', 'return from Loader', err);
-          done(err);
-        }),
-        CollinsError
-      );
-    });
+    it('should throw error if no services attached');
     it('should parse config files correctly', (done) => {
       console.log('>>', 'done', done.toString());
       Loader.initServices.bind(collins, (err) => {
