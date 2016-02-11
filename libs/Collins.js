@@ -48,6 +48,7 @@ class Collins extends Emitter.EventEmitter2 {
       if (error) {
         this.emit('error:start', error);
       }
+      console.log('>>', 'TESTING', '>>', results);
       // INFO: all the initializations have been completed
     });
   }

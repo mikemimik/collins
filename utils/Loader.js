@@ -79,48 +79,43 @@ class Loader {
 
   static initServices(next) {
     console.log('>>', 'Loader', 'initServices', 'this:', this); // TESTING
-    async.each(
-      this.services,
-      (Service, done) => {
-        // console.log('>>', 'Loader', 'initServ', 'Service:', Service); // TESTING
-        let regEx = /(?=[A-Z])/;
-        let configFile = Service.name
-          .split(regEx)
-          .map(x => x.toLowerCase())
-          .filter(n => n !== 'collins')
-          .join('.') + '.config.js';
-        configFile = path.join(__dirname, '..', 'configs', configFile);
-        fs.stat(configFile, (err, stats) => {
-          if (err) {
-            let data = { details: 'Could not find config file for service.' };
-            let error = new CollinsError('FileReadError', data);
-            done(error);
-          } else {
-            const serviceConfig = require(configFile);
-            let service = new Service(serviceConfig);
-            this.services[this.services.indexOf(Service)] = service;
-            service.init((err) => {
-              done(err);
-            });
-          }
-        });
-      }, (err) => {
-        next(err);
-      }
-    );
+    async.each(this.services, (Service, done) => {
+      // console.log('>>', 'Loader', 'initServ', 'Service:', Service); // TESTING
+      let regEx = /(?=[A-Z])/;
+      let configFile = Service.name
+        .split(regEx)
+        .map(x => x.toLowerCase())
+        .filter(n => n !== 'collins')
+        .join('.') + '.config.js';
+      configFile = path.join(__dirname, '..', 'configs', configFile);
+      fs.stat(configFile, (err, stats) => {
+        if (err) {
+          let data = { details: 'Could not find config file for service.' };
+          let error = new CollinsError('FileReadError', data);
+          done(error);
+        } else {
+          const serviceConfig = require(configFile);
+          let service = new Service(serviceConfig);
+          this.services[this.services.indexOf(Service)] = service;
+          service.init((err) => {
+            done(err);
+          });
+        }
+      });
+    }, (err) => {
+      next(err);
+    });
   }
 
   static connectServices(next) {
-    async.each(
-      this.services,
-      (service, done) => {
-        service.connect((err) => {
-          done(err);
-        });
-      }, (err) => {
-        next(err);
-      }
-    );
+    async.each(this.services, (service, done) => {
+      service.connect((err) => {
+        done(err);
+      });
+    }, (err) => {
+      console.log('>>', 'TESTING', this.constructor.name, 'services connected', 'ERROR:', err);
+      next(err);
+    });
   }
 
   static initServiceCogs(next) {
