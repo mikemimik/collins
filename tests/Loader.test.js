@@ -55,12 +55,6 @@ describe('Loader', () => {
 
   describe('#initServices()', () => {
     it('should throw error if no services attached');
-    it('should parse config files correctly', (done) => {
-      console.log('>>', 'done', done.toString());
-      Loader.initServices.bind(collins, (err) => {
-        console.log('>>', 'return from Loader', err);
-        done(err);
-      })();
-    });
+    it('should parse config files correctly');
   });
 });
