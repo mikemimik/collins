@@ -16,7 +16,23 @@ const mockConfigFile = {
 };
 
 let collins = null;
+
 describe('Loader', () => {
+
+  /**
+   * TODO:
+   * - create proper mock
+   *
+   * Case:
+   * Loader works with config files (need: mock files)
+   * Loader works with instance of Collins (need: mock instance)
+   * Loader works with services (need: mock service + service.configfile)
+   *
+   * Needed:
+   * - mock config files
+   * - mock instance of collins
+   * - mock service + config file pre-setup
+   */
   beforeEach((done) => {
     collins = new Collins(mockConfigFile);
     async.series([

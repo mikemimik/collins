@@ -82,6 +82,10 @@ class Loader {
     console.log('>>', 'TESTING', 'lenght', this.services.length);
     console.log('>>', 'TESTING', 'object', this.services);
     if (this.services.length === 0) {
+
+      // INFO: there are no services attached
+      // TODO: control flow: is passing an error correct?
+      // TODO: handle this error somewhere
       let error = new CollinsError('ServiceError', { details: 'No services attached.' });
       next(error);
     } else {
