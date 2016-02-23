@@ -49,16 +49,21 @@ class Loader {
           if (err) { next(err); }
 
           // TODO: propogate main config into service configs
-          let serviceConfigKeys = _.keys(this.config.services);
-          async.each(serviceConfigKeys, (serviceConfigKey, each_done) => {
-            async.forEachOf(this.config.services[serviceConfigKey], (value, key, eachOf_done) => {
+          let serviceList = _.keys(this.config.services);
+          async.each(serviceList, (serviceItem, each_done) => {
+
+            // TODO: rename `key` to `servItemKey`
+            async.forEachOf(this.config.services[serviceItem], (value, key, eachOf_done) => {
               if (value === 'inherit') {
                 if (key === 'username' || key === 'name') {
                   this.config
-                    .services[serviceConfigKey][key] = this.config.main.name;
+                    .services[serviceItem][key] = this.config.main.name;
+                } else if (key === 'userAgent') {
+                  this.config
+                    .services[serviceItem][key] = this.config.main[key] + '-' + serviceItem;
                 } else {
                   this.config
-                    .services[serviceConfigKey][key] = this.config.main[key];
+                    .services[serviceItem][key] = this.config.main[key];
                 }
               }
               eachOf_done(null);
