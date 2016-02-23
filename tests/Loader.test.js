@@ -13,8 +13,6 @@ const mockCollins = {
 
 describe('Loader', () => {
   describe('initServices', () => {
-    it('should parse config files correctly', (done) => {
-      Loader.initServices(done);
-    });
+    it('should parse config files correctly');
   });
 });
