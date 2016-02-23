@@ -27,8 +27,6 @@ try {
   console.log('repl modules not found');
 }
 
-// replify('collins-io', collins);
-
 // INFO: no arrow functions (need context intact)
 collins.on('error:*', function(error) {
   // console.log('>>', 'EVENT', this.event); // TESTING
