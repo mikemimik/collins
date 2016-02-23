@@ -5,23 +5,28 @@ const Collins = require('./libs/Collins');
 const config = require('./configs');
 
 // INFO: Collins service-gear
-const mumbleGear = require('collins-mumble');
+// const mumbleGear = require('collins-mumble');
 const slackGear = require('collins-slack');
 
 // INFO: create new instance of Collins
 let collins = new Collins(config);
 
-collins.use(mumbleGear);
+// collins.use(mumbleGear);
 collins.use(slackGear);
 
 // INFO: repl module and config
-const replify = require('replify');
-replify({
-  name: 'collins-io',
-  path: '/tmp',
-  extention: '.sock',
-  app: collins
-});
+try {
+  const replify = require('replify');
+  replify({
+    name: 'collins-io',
+    path: '/tmp',
+    extention: '.sock',
+    app: collins
+  });
+} catch(e) {
+  console.log('repl modules not found');
+}
+
 // replify('collins-io', collins);
 
 // INFO: no arrow functions (need context intact)
