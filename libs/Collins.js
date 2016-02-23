@@ -14,6 +14,8 @@ const Loader = require('../utils/Loader');
 const async = require('async');
 // const Emitter = require('events');
 const Emitter = require('eventemitter2');
+const Winston = require('winston');
+const logOpts = require('../utils/winston-collins');
 
 class Collins extends Emitter.EventEmitter2 {
   constructor(config) {
@@ -26,6 +28,15 @@ class Collins extends Emitter.EventEmitter2 {
     this.config = Loader.validateConfig(config);
     this.services = [];
     this.Runtime = require('../utils/Runtime');
+
+    // TODO: clean this up, I don't like how messy it looks
+    this.logger = new Winston.Logger({
+      level: this.config.logLevel || 'info',
+      transports: logOpts.transports,
+      filters: [ logOpts.filter.bind(this) ],
+      levels: logOpts.config.levels,
+      colors: logOpts.config.colors
+    });
   }
 
   use(service_gear) {
@@ -48,7 +59,7 @@ class Collins extends Emitter.EventEmitter2 {
       if (error) {
         this.emit('error:start', error);
       }
-      console.log('>>', 'TESTING', '>>', results);
+      this.logger.core('TESTING', this.constructor.name, 'finished start', results);
       // INFO: all the initializations have been completed
     });
   }
