@@ -61,6 +61,9 @@ class Loader {
                 } else if (key === 'userAgent') {
                   this.config
                     .services[serviceItem][key] = this.config.main[key] + '-' + serviceItem;
+                } else if (key === 'logger') {
+                  this.config
+                    .services[serviceItem][key] = this.logger;
                 } else {
                   this.config
                     .services[serviceItem][key] = this.config.main[key];
@@ -76,14 +79,14 @@ class Loader {
 
             // INFO: all serviceConfigs have been processed for inheritance
             next(null);
-          }); // INFO: async.each:done over serviceConfigs
-        }); // INFO: async.each:done over files
+          }); // INFO: async.each:done over serviceList
+        }); // INFO: async.each:done over files; generate master config
       } // INFO: end of else
     });
   }
 
   static initServices(next) {
-    console.log('>>', 'Loader', 'initServices', 'this:', this); // TESTING
+    this.logger.core('Loader', 'initServices', 'this:', this); // TESTING
     async.each(this.services, (Service, done) => {
       // console.log('>>', 'Loader', 'initServ', 'Service:', Service); // TESTING
       let regEx = /(?=[A-Z])/;
@@ -118,7 +121,7 @@ class Loader {
         done(err);
       });
     }, (err) => {
-      console.log('>>', 'TESTING', this.constructor.name, 'services connected', 'ERROR:', err);
+      this.logger.core('TESTING', this.constructor.name, 'services connected', 'ERROR:', err);
       next(err);
     });
   }
@@ -133,6 +136,7 @@ class Loader {
 
   static validateConfig(config) {
 
+    // INFO: must be a synchronous function
     // TODO: validate config file
     return config;
   }
