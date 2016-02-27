@@ -26,11 +26,15 @@ class Loader {
           if (file.split('.')[0] === 'index') {
             masterConfig.main = require(path.join(configDir, file));
           } else {
+
+            // INFO: [service-gear-name, config, js], length === 3
             if (file.split('.').length === 3) {
               let serviceName = file.split('.')[0];
               if (!masterConfig.services) { masterConfig.services = {}; }
               masterConfig.services[serviceName] = require(path.join(configDir, file));
             } else {
+
+              // INFO: [service-gear-name, cog-name, config, js], length === 4
               let serviceName = file.split('.')[0];
               let cogName = file.split('.')[1];
               if (!masterConfig.services[serviceName].cogs) {
@@ -94,7 +98,7 @@ class Loader {
         .split(regEx)
         .map(x => x.toLowerCase())
         .filter(n => n !== 'collins')
-        .join('.') + '.config.js';
+        .join() + '.config.js';
       configFile = path.join(__dirname, '..', 'configs', configFile);
       fs.stat(configFile, (err, stats) => {
         if (err) {
@@ -102,7 +106,11 @@ class Loader {
           let error = new CollinsError('FileReadError', data);
           done(error);
         } else {
+
+          // INFO: I have no idea how this works. Where is the inheritance?
+          // INFO: object referencing? Is that how this works?
           const serviceConfig = require(configFile);
+          // console.log('serviceConfig:', serviceConfig); // TESTING
           let service = new Service(serviceConfig);
           this.services[this.services.indexOf(Service)] = service;
           service.init((err) => {
