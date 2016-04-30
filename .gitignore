@@ -6,7 +6,6 @@ ssl/
 
 # Editor
 typings/
-jsconfig.json
 
 # Logs
 logs/
