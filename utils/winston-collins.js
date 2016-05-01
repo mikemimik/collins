@@ -12,9 +12,9 @@ exports.config = {
     error: 0,
     warn: 1,
     info: 2,
-    verbose: 3,
-    core: 4,
-    gear: 5,
+    core: 3,
+    gear: 4,
+    verbose: 5,
     debug: 6
   },
   colors: {
@@ -29,7 +29,7 @@ exports.config = {
 };
 
 exports.filter = function(level, msg, meta) {
-  return this.config.main.name
+  return this.constructor.name
     + ' > '
     + msg;
 };
