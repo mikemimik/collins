@@ -3,6 +3,6 @@
 module.exports = {
   name: 'Collins',
   userAgent: 'collins',
-  logLevel: 'info',
+  logLevel: 'debug',
   debug: true
 };
