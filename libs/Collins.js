@@ -31,7 +31,7 @@ class Collins extends Emitter.EventEmitter2 {
 
     // TODO: clean this up, I don't like how messy it looks
     this.logger = new Winston.Logger({
-      level: this.config.logLevel || 'info',
+      level: this.config.logLevel || 'debug',
       transports: logOpts.transports,
       filters: [ logOpts.filter.bind(this) ],
       levels: logOpts.config.levels,
@@ -44,8 +44,7 @@ class Collins extends Emitter.EventEmitter2 {
   }
 
   start() {
-
-    // TODO: call the Loader
+    this.logger.core(this.constructor.name, 'Core#start');
     async.series([
       Loader.init.bind(this),
       Loader.initConfig.bind(this),
@@ -57,10 +56,17 @@ class Collins extends Emitter.EventEmitter2 {
 
       // INFO: we got an error from some init loader
       if (error) {
+        this.logger.error(this.constructor.name, 'Core#start', error);
         this.emit('error:start', error);
       }
-      this.logger.core('TESTING', this.constructor.name, 'finished start', results);
+      results.forEach((result) => {
+        if (result) {
+          this.logger.info(this.constructor.name, 'Core#start', result);
+        }
+      });
+
       // INFO: all the initializations have been completed
+      this.logger.core(this.constructor.name, 'Core#start', 'complete');
     });
   }
 }
