@@ -82,6 +82,7 @@ class Loader {
           }, (each_err) => {
 
             // INFO: all serviceConfigs have been processed for inheritance
+            this.logger.core(this.constructor.name, 'Loader#initConfig');
             next(null);
           }); // INFO: async.each:done over serviceList
         }); // INFO: async.each:done over files; generate master config
@@ -90,9 +91,8 @@ class Loader {
   }
 
   static initServices(next) {
-    this.logger.core('Loader', 'initServices', 'this:', this); // TESTING
+    this.logger.core(this.constructor.name, 'Loader#initServices');
     async.each(this.services, (Service, done) => {
-      // console.log('>>', 'Loader', 'initServ', 'Service:', Service); // TESTING
       let regEx = /(?=[A-Z])/;
       let configFile = Service.name
         .split(regEx)
@@ -114,31 +114,43 @@ class Loader {
           let service = new Service(serviceConfig);
           this.services[this.services.indexOf(Service)] = service;
           service.init((err) => {
+            /**
+             * err:
+             *  - `null`: everything is fine
+             *  - `error`: service failed to initialize
+             */
             done(err);
           });
         }
       });
     }, (err) => {
+      this.logger.core(this.constructor.name, 'Loader#initServices', 'complete');
       next(err);
     });
   }
 
   static connectServices(next) {
+    this.logger.core(this.constructor.name, 'Loader#connectServices');
     async.each(this.services, (service, done) => {
       service.connect((err) => {
         done(err);
       });
     }, (err) => {
-      this.logger.core('TESTING', this.constructor.name, 'services connected', 'ERROR:', err);
+      if (err) {
+        this.logger.error(this.constructor.name, 'Loader#connectServices', err);
+      }
+      this.logger.core(this.constructor.name, 'Loader#connectServices', 'complete');
       next(err);
     });
   }
 
   static initServiceCogs(next) {
+    this.logger.core(this.constructor.name, 'Loader#initServiceCogs');
     next(null);
   }
 
   static initActions(next) {
+    this.logger.core(this.constructor.name, 'Loader#initActions');
     next(null);
   }
 
