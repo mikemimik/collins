@@ -55,6 +55,9 @@ class Collins extends Emitter.EventEmitter2 {
 
       // INFO: all the initializations have been completed
       this.logger.core(this.constructor.name, 'Core#start', 'complete');
+      if (callback && typeof callback === 'function') {
+        callback(this);
+      }
     });
   }
 }
