@@ -1,19 +1,30 @@
 'use strict';
 const CollinsError = require('../libs/CollinsError');
+const Winston = require('winston');
+const logOpts = require('./winston-collins');
 const async = require('async');
 const path = require('path');
 const fs = require('fs');
 const _ = require('lodash');
 
 class Loader {
-  static init(next) {
+  static init (next) {
+    this.logger = new Winston.Logger({
+      level: this.config.logLevel || 'debug',
+      transports: logOpts.transports,
+      filters: [ logOpts.filter.bind(this) ],
+      levels: logOpts.config.levels,
+      colors: logOpts.config.colors
+    });
+
+    this.logger.core(this.constructor.name, 'Core#start');
     next(null);
   }
 
-  static initConfig(next) {
+  static initConfig (next) {
 
     // INFO: build system wide config object
-    let configDir = path.join(__dirname, '..', 'configs');
+    let configDir = path.join(__dirname, '..', 'configss');
     let masterConfig = {};
     fs.readdir(configDir, (err, files) => {
       if (err) {
