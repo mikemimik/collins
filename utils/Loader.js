@@ -101,7 +101,7 @@ class Loader {
     });
   }
 
-  static initServices(next) {
+  static initServices (next) {
     this.logger.core(this.constructor.name, 'Loader#initServices');
     async.each(this.services, (Service, done) => {
       let regEx = /(?=[A-Z])/;
@@ -140,7 +140,7 @@ class Loader {
     });
   }
 
-  static connectServices(next) {
+  static connectServices (next) {
     this.logger.core(this.constructor.name, 'Loader#connectServices');
     async.each(this.services, (service, done) => {
       service.connect((err) => {
@@ -155,21 +155,66 @@ class Loader {
     });
   }
 
-  static initServiceCogs(next) {
+  static initServiceCogs (next) {
     this.logger.core(this.constructor.name, 'Loader#initServiceCogs');
     next(null);
   }
 
-  static initActions(next) {
+  static initActions (next) {
     this.logger.core(this.constructor.name, 'Loader#initActions');
     next(null);
   }
 
-  static validateConfig(config) {
-
+  static validateConfig (config) {
     // INFO: must be a synchronous function
     // TODO: validate config file
-    return config;
+    let name = config.name;
+    let userAgent = config.userAgent;
+    let logLevel = config.logLevel;
+    let errorObj = {
+      type: 'config:error',
+      reasons: []
+    };
+
+    // TODO: validate name prop
+    if (name === null || name === undefined) {
+      /* emit error */
+      errorObj.reasons.push('config.name: missing');
+    } else {
+     if (hasSpaces(name)) {
+       errorObj.reasons.push('config.name: no spaces allowed');
+     }
+    }
+
+    // TODO: validate userAgent prop
+    if (userAgent === null || userAgent === undefined) {
+      /* emit error */
+      errorObj.reasons.push('config.userAgent missing');
+    } else {
+      if (hasSpaces(userAgent)) {
+        errorObj.reasons.push('config.userAgent: no spaces allowed');
+      }
+    }
+
+    // TODO: validate logLevel prop
+    if (logLevel === null || logLevel === undefined) {
+      /* emit error */
+      errorObj.reasons.push('config.logLevel missing');
+    }
+    if (errorObj.reasons.length > 0) {
+      /* emit error */
+      throw new CollinsError(errorObj.type, errorObj);
+    } else {
+      return config;
+    }
+
+    function hasSpaces (prop) {
+      if (prop.split(' ').length > 1) {
+        return true
+      } else {
+        return false;
+      }
+    }
   }
 }
 
