@@ -17,17 +17,24 @@ class ExtendableError extends Error {
  */
 class CollinsError extends ExtendableError {
   constructor(type, data) {
-    super('constructor');
-    this.data = (data) ? data : {};
+    super(type);
+    this.data = data || {};
     this.type = type;
     this.message = '\'' + type + '\' error message received';
-    let reason = data.details || data.reason;
-    if (reason) {
-      this.message += ':\n"' + reason + '"\n';
+    let reasons = data.details || data.reasons;
+    if (reasons) {
+      this.message += ':';
+      if (Array.isArray(reasons)) {
+        reasons.forEach((reason) => {
+          this.message += '\n\t"' + reason + '"';
+        });
+      } else {
+        this.message += '\n"' + reasons + '"\n';
+      }
     } else {
       this.message += '. ';
     }
-    this.message += 'See \'data\' for details.';
+    this.message += '\nSee \'data\' for details.';
   }
 }
 
