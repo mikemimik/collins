@@ -1,7 +1,5 @@
 'use strict';
 const CollinsError = require('../libs/CollinsError');
-const Winston = require('winston');
-const logOpts = require('../configs/logger');
 const Config = require('../configs');
 const async = require('async');
 const path = require('path');
@@ -10,12 +8,12 @@ const _ = require('lodash');
 
 class Loader {
   static init (next) {
-    this.logger = new Winston.Logger({
+    this.logger = new Config.logger.Init({
       level: this.config.logLevel,
-      transports: logOpts.transports,
-      filters: [ logOpts.filter.bind(this) ],
-      levels: logOpts.config.levels,
-      colors: logOpts.config.colors
+      transports: Config.logger.transports,
+      filters: [ Config.logger.filter.bind(this) ],
+      levels: Config.logger.logLevels.core,
+      colors: Config.logger.logColors
     });
 
     this.logger.core(this.constructor.name, 'Core#start');
