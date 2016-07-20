@@ -25,7 +25,7 @@ class Loader {
   static initConfig (next) {
 
     // INFO: build system wide config object
-    let configDir = path.join(__dirname, '..', 'configss');
+    let configDir = path.join(__dirname, '..', 'configs');
     let masterConfig = {};
     fs.readdir(configDir, (err, files) => {
       if (err) {
@@ -167,13 +167,14 @@ class Loader {
   }
 
   static validateConfig (config) {
-    // INFO: must be a synchronous function
+
+
     // TODO: validate config file
     let name = config.name;
     let userAgent = config.userAgent;
     let logLevel = config.logLevel;
     let errorObj = {
-      type: 'config:error',
+      type: 'error:validateConfig',
       reasons: []
     };
 
