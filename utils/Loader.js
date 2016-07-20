@@ -1,7 +1,8 @@
 'use strict';
 const CollinsError = require('../libs/CollinsError');
 const Winston = require('winston');
-const logOpts = require('./winston-collins');
+const logOpts = require('../configs/logger');
+const Config = require('../configs');
 const async = require('async');
 const path = require('path');
 const fs = require('fs');
