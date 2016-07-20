@@ -11,7 +11,7 @@ const _ = require('lodash');
 class Loader {
   static init (next) {
     this.logger = new Winston.Logger({
-      level: this.config.logLevel || 'debug',
+      level: this.config.logLevel,
       transports: logOpts.transports,
       filters: [ logOpts.filter.bind(this) ],
       levels: logOpts.config.levels,
