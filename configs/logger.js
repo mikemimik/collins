@@ -16,7 +16,7 @@ const logLevels = {
   },
   gear: {
     error: 0, warn: 1, info: 2,
-    cog: 3
+    cog: 3,
     verbose: 4, debug: 5
   }
 };
