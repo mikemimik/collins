@@ -15,7 +15,7 @@ let defaultSchema = {
   },
   logLevel: {
     doc: 'Level at which to log events and errors',
-    format: Object.keys(logger.logLevels.core);
+    format: Object.keys(logger.logLevels.core),
     default: 'debug'
   }
 };
