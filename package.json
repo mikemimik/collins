@@ -23,13 +23,14 @@
   },
   "homepage": "https://github.com/mikemimik/collins#readme",
   "dependencies": {
-    "async": "^1.5.2",
-    "eventemitter2": "^0.4.14",
-    "lodash": "^4.2.1",
-    "winston": "^2.1.1"
+    "async": "^2.0.0",
+    "convict": "^1.4.0",
+    "eventemitter2": "^2.0.0",
+    "lodash": "^4.13.1",
+    "winston": "^2.2.0"
   },
   "devDependencies": {
-    "mocha": "^2.4.5",
+    "mocha": "^2.5.3",
     "replify": "^1.2.0"
   }
 }
