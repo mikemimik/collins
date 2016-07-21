@@ -9,7 +9,7 @@
 class CollinsError extends Error {
   constructor(type, data) {
     super();
-    this.name = this.construtor.name;
+    this.name = this.constructor.name;
     this.data = data || {};
     this.type = type;
     this.message = `<${this.type}> error message received`;
