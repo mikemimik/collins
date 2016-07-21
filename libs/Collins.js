@@ -9,26 +9,42 @@
 // INFO: collins specific modules
 const CollinsError = require('./CollinsError');
 const Loader = require('../utils/Loader');
+const Configuration = require('./Configuration');
 
 // INFO: common modules
 const async = require('async');
-// const Emitter = require('events');
-const Emitter = require('eventemitter2');
+const Emitter = require('eventemitter2').EventEmitter2;
 
-class Collins extends Emitter.EventEmitter2 {
-  constructor (config) {
+class Collins extends Emitter {
+  constructor (dirPath) {
     super({
       wildcard: true,
       delimiter: ':'
     });
 
     // TODO: check if config is valid
-    this.config = Loader.validateConfig(config);
     this.services = [];
+    this.configuration = new Configuration();
     this.Runtime = require('../utils/Runtime');
+    if (dirPath) {
+      this.configuration.setPath(dirPath);
+    }
   }
 
-  use (service_gear) {
+  configure (dirPath) {
+    if (dirPath) {
+      this.configuration.setPath(dirPath);
+      this.configuration.configure.bind(this);
+    } else {
+      if (!this.configuration.path) {
+        throw new CollinsError('error:config', {
+          details: 'no config path suppled'
+        });
+      }
+    }
+  }
+
+  include (service_gear) {
     this.services.push(service_gear);
   }
 
