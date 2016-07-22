@@ -37,15 +37,35 @@ class Collins extends Emitter {
       this.configuration.configure.bind(this);
     } else {
       if (!this.configuration.path) {
-        throw new CollinsError('error:config', {
+        throw new CollinsError('config:invalidInput', {
           details: 'no config path supplied'
         });
       }
     }
   }
 
-  include (service_gear) {
-    this.services.push(service_gear);
+  include (serviceGear) {
+    switch (typeof serviceGear) {
+      case 'string':
+
+        // INFO: need to require package
+        // 1) check name formatting 'collins-gearName'
+        // 2) require package name (where will require look?)
+        // 3) push required package into `this.services`
+        break;
+      case 'function':
+
+        // INFO: package already required, just push to array
+        this.services.push(serviceGear);
+        break;
+      default:
+
+        // INFO: not a supported type, throw error
+        throw new CollinsError('config:invalidInput', {
+          details: 'invalid function params'
+        });
+        break;
+    }
   }
 
   start (callback) {
