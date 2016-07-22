@@ -1,5 +1,9 @@
 'use strict';
 
+const ErrorTypes = require('./ErrorTypes');
+const async = require('async');
+const _ = require('lodash');
+
 /**
  * @summary Error class for delivering errors with Collins
  *
@@ -11,7 +15,25 @@ class CollinsError extends Error {
     super();
     this.name = this.constructor.name;
     this.data = data || {};
-    this.type = type;
+    async.each(
+      type.split(':'),
+      function checkType (errorType, cb) {
+        if (!_.includes(ErrorTypes, errorType.toLowerCase())) {
+          cb(true);
+        } else {
+          cb(null);
+        }
+      },
+      (err) => {
+        if (err) {
+          throw new CollinsError('InvalidErrorType', {
+            details: 'invalid error type give to error object'
+          });
+        } else {
+          this.type = type;
+        }
+      }
+    );
     this.message = `<${this.type}> error message received`;
     let reasons = this.data.details || this.data.reasons;
     if (reasons) {

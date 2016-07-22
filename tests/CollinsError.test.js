@@ -14,6 +14,11 @@ describe('CollinsError', () => {
   it('should have type `TestError`', () => {
     assert.equal(error.type, 'TestError');
   });
+  it('should throw when instanciated with an invalid ErrorType', () => {
+    assert.throws(() => {
+      let badError = new CollinsError('BadErrorType:MoreBadType');
+    });
+  })
   describe('convert', () => {
     let foreignError = new Error('testing');
     it('takes an Error', () => {
