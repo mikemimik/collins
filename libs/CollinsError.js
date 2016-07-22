@@ -26,7 +26,7 @@ class CollinsError extends Error {
       },
       (err) => {
         if (err) {
-          throw new CollinsError('InvalidErrorType', {
+          throw new CollinsError('TypeError', {
             details: 'invalid error type give to error object'
           });
         } else {

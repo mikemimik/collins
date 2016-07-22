@@ -113,7 +113,7 @@ class Loader {
       fs.stat(configFile, (err, stats) => {
         if (err) {
           let data = { details: 'Could not find config file for service.' };
-          let error = new CollinsError('FileReadError', data);
+          let error = new CollinsError('Invalid:File', data);
           done(error);
         } else {
 
@@ -172,7 +172,7 @@ class Loader {
     let userAgent = config.userAgent;
     let logLevel = config.logLevel;
     let errorObj = {
-      type: 'error:validateConfig',
+      type: 'Invalid:Input',
       reasons: []
     };
 

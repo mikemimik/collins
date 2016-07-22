@@ -53,7 +53,7 @@ Configuration.prototype.setPath = function setPath (p) {
     if (stats.isDirectory()) {
       this.path = p;
     } else {
-      throw new CollinsError('error:config', {
+      throw new CollinsError('Invalid:Input', {
         details: 'invaild configuration directory'
       });
     }
