@@ -7,13 +7,13 @@
  * @param {Object} data Data given to the error
  */
 class CollinsError extends Error {
-  constructor(type, data) {
+  constructor (type, data) {
     super();
     this.name = this.constructor.name;
     this.data = data || {};
     this.type = type;
     this.message = `<${this.type}> error message received`;
-    let reasons = data.details || data.reasons;
+    let reasons = this.data.details || this.data.reasons;
     if (reasons) {
       this.message += ': ';
 
