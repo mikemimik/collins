@@ -42,7 +42,7 @@ class CollinsError extends Error {
       // INFO: check if `reasons` is an array
       if (Array.isArray(reasons)) {
         reasons.forEach((reason, index) => {
-          this.message += `${index+1}> ${reason} `;
+          this.message += `${index + 1}> ${reason} `;
         });
       } else {
         this.message += `${reasons}`;

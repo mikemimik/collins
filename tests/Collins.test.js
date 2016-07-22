@@ -3,8 +3,8 @@
 const assert = require('assert');
 const Collins = require('../libs/Collins');
 
-describe('Collins', function() {
-  it('should expose a constructor', function() {
+describe('Collins', () => {
+  it('should expose a constructor', () => {
     assert(typeof Collins, 'function');
   });
 });

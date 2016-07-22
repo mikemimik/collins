@@ -12,5 +12,5 @@ module.exports = [
         throw new Error('must be a string');
       }
     }
-  },
+  }
 ];

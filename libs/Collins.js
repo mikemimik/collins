@@ -64,7 +64,6 @@ class Collins extends Emitter {
         throw new CollinsError('InvalidInput', {
           details: 'invalid function params'
         });
-        break;
     }
   }
 
@@ -77,7 +76,6 @@ class Collins extends Emitter {
       Loader.initServiceCogs.bind(this),
       Loader.initActions.bind(this)
     ], (error, results) => {
-
       // INFO: we got an error from some init loader
       if (error) {
         this.logger.error(this.constructor.name, 'Core#start', error);

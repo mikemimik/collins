@@ -21,19 +21,17 @@ class Loader {
   }
 
   static initConfig (next) {
-
     // 1) read directory
     fs.readdir(this.configuration.path, (err, files) => {
       if (err) {
         next(err);
       } else {
-
         // 2) sort directory list of files
         // 2.1) ignore unknown files (eg. not .js, or correct naming convention)
         files = _.chain(files)
 
           // INFO: filter out any non .js files
-          .filter(f => f.split('.')[f.split('.').length-1] === 'js')
+          .filter(f => f.split('.')[f.split('.').length - 1] === 'js')
           // INFO: sort by service gear
           .sortBy(f => f.split('.')[0])
           // INFO: sort by cog
@@ -52,9 +50,9 @@ class Loader {
           this.configuration.configObj.load(configFile);
 
           // INFO: check if config file is valid
-          try { this.configuration.configObj.validate(); }
-          catch (e) {
-
+          try {
+            this.configuration.configObj.validate();
+          } catch (e) {
             // INFO: catch error when config invalid
             let validationError = CollinsError.convert('error:loader:initconfig', e);
             next(validationError);
@@ -63,21 +61,19 @@ class Loader {
           // 4) compare list of conif files against modules included in instance
           // INFO: remove index.js (already processed)
           files = _.pull(files, 'index.js');
-          let serviceList = this.services.map(s => return s.name);
+          let serviceList = this.services.map(s => s.name);
           let configNameList = _.chain(files)
             .map(file => file.split('.')[0])
             .uniq()
             .value();
           let missingConfigs = _.difference(serviceList, configNameList);
           if (missingConfigs.length) {
-
             // INFO: missing configs, throw error
             let noConfigError = new CollinsError('Missing:Config', {
               details: 'missing config for the following services: ' + missingConfigs
             });
             next(noConfigError);
           } else {
-
             // INFO: not missing configs, continue
             this.configuration.files = files;
             next(null);
@@ -103,7 +99,6 @@ class Loader {
           let error = new CollinsError('Invalid:File', data);
           done(error);
         } else {
-
           // INFO: I have no idea how this works. Where is the inheritance?
           // INFO: object referencing? Is that how this works?
           const serviceConfig = require(configFile);
@@ -152,8 +147,6 @@ class Loader {
   }
 
   static validateConfig (config) {
-
-
     // TODO: validate config file
     let name = config.name;
     let userAgent = config.userAgent;
@@ -168,9 +161,9 @@ class Loader {
       /* emit error */
       errorObj.reasons.push('config.name: missing');
     } else {
-     if (hasSpaces(name)) {
-       errorObj.reasons.push('config.name: no spaces allowed');
-     }
+      if (hasSpaces(name)) {
+        errorObj.reasons.push('config.name: no spaces allowed');
+      }
     }
 
     // TODO: validate userAgent prop
@@ -197,7 +190,7 @@ class Loader {
 
     function hasSpaces (prop) {
       if (prop.split(' ').length > 1) {
-        return true
+        return true;
       } else {
         return false;
       }

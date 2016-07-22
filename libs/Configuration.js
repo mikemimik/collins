@@ -17,7 +17,6 @@ function Configuration () {
   this.configObj = convict(Config.schema);
 }
 
-
 /**
  * @summary Function to initialize the configuration of system
  */
@@ -27,7 +26,6 @@ Configuration.prototype.configure = function configure () {
     Loader.initConfig.bind(this),
     Loader.initServices.bind(this)
   ], (error, results) => {
-
     // INFO: we got an error from some init Loader
     if (error) {
       this.logger.error(this.constructor.name, 'core:error:configuration:configure', error);
@@ -39,7 +37,7 @@ Configuration.prototype.configure = function configure () {
       }
     });
   });
-}
+};
 
 /**
  * @summary Function to set/validate path given for Configuration
@@ -59,6 +57,6 @@ Configuration.prototype.setPath = function setPath (p) {
       });
     }
   });
-}
+};
 
 module.exports = Configuration;
