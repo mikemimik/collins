@@ -38,7 +38,7 @@ class Collins extends Emitter {
     } else {
       if (!this.configuration.path) {
         throw new CollinsError('error:config', {
-          details: 'no config path suppled'
+          details: 'no config path supplied'
         });
       }
     }
