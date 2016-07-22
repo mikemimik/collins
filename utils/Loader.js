@@ -22,81 +22,68 @@ class Loader {
 
   static initConfig (next) {
 
-    // INFO: build system wide config object
-    let configDir = path.join(__dirname, '..', 'configs');
-    let masterConfig = {};
-    fs.readdir(configDir, (err, files) => {
+    // 1) read directory
+    fs.readdir(this.configuration.path, (err, files) => {
       if (err) {
         next(err);
       } else {
 
-        // INFO: sort by split length, so gears get required before cogs
-        files = _.sortBy(files, (f) => f.split('.').length);
-        async.each(files, (file, done) => {
-          if (file.split('.')[0] === 'index') {
-            masterConfig.main = require(path.join(configDir, file));
+        // 2) sort directory list of files
+        // 2.1) ignore unknown files (eg. not .js, or correct naming convention)
+        files = _.chain(files)
+
+          // INFO: filter out any non .js files
+          .filter(f => f.split('.')[f.split('.').length-1] === 'js')
+          // INFO: sort by service gear
+          .sortBy(f => f.split('.')[0])
+          // INFO: sort by cog
+          .sortBy(f => f.split('.').length)
+          .value(); // INFO: pull value from chaining function
+
+        // 3) validate core (index.js) config
+        // INFO: check for index.js
+        if (_.find(files, v => v === 'index.js') === -1) {
+          let noConfigError = new CollinsError('Missing:Config', {
+            details: 'no index config supplied'
+          });
+          next(noConfigError);
+        } else {
+          let configFile = require(path.join(this.configuration.path, 'index.js'));
+          this.configuration.configObj.load(configFile);
+
+          // INFO: check if config file is valid
+          try { this.configuration.configObj.validate(); }
+          catch (e) {
+
+            // INFO: catch error when config invalid
+            let validationError = CollinsError.convert('error:loader:initconfig', e);
+            next(validationError);
+          }
+
+          // 4) compare list of conif files against modules included in instance
+          // INFO: remove index.js (already processed)
+          files = _.pull(files, 'index.js');
+          let serviceList = this.services.map(s => return s.name);
+          let configNameList = _.chain(files)
+            .map(file => file.split('.')[0])
+            .uniq()
+            .value();
+          let missingConfigs = _.difference(serviceList, configNameList);
+          if (missingConfigs.length) {
+
+            // INFO: missing configs, throw error
+            let noConfigError = new CollinsError('Missing:Config', {
+              details: 'missing config for the following services: ' + missingConfigs
+            });
+            next(noConfigError);
           } else {
 
-            // INFO: [service-gear-name, config, js], length === 3
-            if (file.split('.').length === 3) {
-              let serviceName = file.split('.')[0];
-              if (!masterConfig.services) { masterConfig.services = {}; }
-              masterConfig.services[serviceName] = require(path.join(configDir, file));
-            } else {
-
-              // INFO: [service-gear-name, cog-name, config, js], length === 4
-              let serviceName = file.split('.')[0];
-              let cogName = file.split('.')[1];
-              if (!masterConfig.services[serviceName].cogs) {
-                masterConfig.services[serviceName].cogs = {};
-              }
-              masterConfig
-                .services[serviceName]
-                .cogs[cogName] = require(path.join(configDir, file));
-            }
-          }
-          done(null);
-        }, (err) => {
-          this.config = masterConfig;
-
-          // INFO: if we received an error here, we have a broken config file
-          if (err) { next(err); }
-
-          // TODO: propogate main config into service configs
-          let serviceList = _.keys(this.config.services);
-          async.each(serviceList, (serviceItem, each_done) => {
-
-            // TODO: rename `key` to `servItemKey`
-            async.forEachOf(this.config.services[serviceItem], (value, key, eachOf_done) => {
-              if (value === 'inherit') {
-                if (key === 'username' || key === 'name') {
-                  this.config
-                    .services[serviceItem][key] = this.config.main.name;
-                } else if (key === 'userAgent') {
-                  this.config
-                    .services[serviceItem][key] = this.config.main[key] + '-' + serviceItem;
-                } else if (key === 'logger') {
-                  this.config
-                    .services[serviceItem][key] = this.logger;
-                } else {
-                  this.config
-                    .services[serviceItem][key] = this.config.main[key];
-                }
-              }
-              eachOf_done(null);
-            }, (eachOf_err) => {
-
-              // INFO: all service properties have been inherited
-              each_done(null);
-            }); // INFO: async.forEachof:done over properties
-          }, (each_err) => {
-
-            // INFO: all serviceConfigs have been processed for inheritance
-            this.logger.core(this.constructor.name, 'Loader#initConfig');
+            // INFO: not missing configs, continue
+            this.configuration.files = files;
             next(null);
-          }); // INFO: async.each:done over serviceList
-        }); // INFO: async.each:done over files; generate master config
-      } // INFO: end of else
+          }
+        }
+      }
     });
   }
 
