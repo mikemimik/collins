@@ -30,6 +30,12 @@ class CollinsError extends Error {
     }
     this.message += '\nSee \'data\' for details.';
   }
+
+  static convert (type, error) {
+    // INFO: given an Error, return a CollinsError
+    let details = { details: error.message };
+    return new CollinsError(type, details);
+  }
 }
 
 module.exports = CollinsError;

@@ -14,4 +14,15 @@ describe('CollinsError', () => {
   it('should have type `TestError`', () => {
     assert.equal(error.type, 'TestError');
   });
+  describe('convert', () => {
+    let foreignError = new Error('testing');
+    it('takes an Error', () => {
+      assert.equal(foreignError instanceof Error, true);
+      assert.equal(foreignError instanceof CollinsError, false);
+    });
+    it('should convert Error into CollinsError', () => {
+      let convertedError = CollinsError.convert('TestError', foreignError);
+      assert.equal(convertedError instanceof CollinsError, true);
+    });
+  });
 });
