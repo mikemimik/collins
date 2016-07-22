@@ -4,7 +4,7 @@
   "description": "The glue for holding service-gears together.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha tests/",
+    "test": "npm run lint && mocha tests/",
     "lint": "semistandard"
   },
   "repository": {
