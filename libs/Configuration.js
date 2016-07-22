@@ -1,13 +1,19 @@
 'use strict';
 const CollinsError = require('./CollinsError');
+const convict = require('convict');
 const Loader = require('../utils/Loader');
+const Config = require('../configs');
 const async = require('async');
 const fs = require('fs');
 
 function Configuration () {
   this.isConfigured = false;
-  this.path = '';
   this.options = {};
+  this.path = '';
+
+  // INFO: initialize convict
+  Config.formats.forEach((f) => { convict.addFormat(f); });
+  this.configObj = convict(Config.schema);
 }
 
 
@@ -17,7 +23,8 @@ function Configuration () {
 Configuration.prototype.configure = function configure () {
   async.series([
     Loader.init.bind(this),
-    Loader.initConfig.bind(this)
+    Loader.initConfig.bind(this),
+    Loader.initServices.bind(this)
   ], (error, results) => {
 
     // INFO: we got an error from some init Loader
