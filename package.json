@@ -4,8 +4,8 @@
   "description": "The glue for holding service-gears together.",
   "main": "index.js",
   "scripts": {
-    "start": "node --harmony_destructuring demo.js",
-    "test": "mocha tests/"
+    "test": "mocha tests/",
+    "lint": "semistandard"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,14 @@
   },
   "devDependencies": {
     "mocha": "^2.5.3",
-    "replify": "^1.2.0"
+    "replify": "^1.2.0",
+    "semistandard": "^8.0.0"
+  },
+  "semistandard": {
+    "globals": [ "describe", "it" ],
+    "ignore": [
+      "legacy.js",
+      "demo.js"
+    ]
   }
 }
