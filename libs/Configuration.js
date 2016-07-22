@@ -10,6 +10,7 @@ function Configuration () {
   this.isConfigured = false;
   this.options = {};
   this.path = '';
+  this.files = [];
 
   // INFO: initialize convict
   Config.formats.forEach((f) => { convict.addFormat(f); });
