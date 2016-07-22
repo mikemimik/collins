@@ -37,7 +37,7 @@ class Collins extends Emitter {
       this.configuration.configure.bind(this);
     } else {
       if (!this.configuration.path) {
-        throw new CollinsError('config:invalidInput', {
+        throw new CollinsError('InvalidInput', {
           details: 'no config path supplied'
         });
       }
@@ -61,7 +61,7 @@ class Collins extends Emitter {
       default:
 
         // INFO: not a supported type, throw error
-        throw new CollinsError('config:invalidInput', {
+        throw new CollinsError('InvalidInput', {
           details: 'invalid function params'
         });
         break;
