@@ -37,9 +37,11 @@ class Collins extends Emitter {
       this.configuration.configure.bind(this);
     } else {
       if (!this.configuration.path) {
-        throw new CollinsError('InvalidInput', {
+        throw new CollinsError('Missing:Config', {
           details: 'no config path supplied'
         });
+      } else {
+        this.configuration.configure.bind(this);
       }
     }
   }
