@@ -1,6 +1,8 @@
 # collins
 [![Build Status](https://travis-ci.org/mikemimik/collins.svg?branch=dev-refactor-collins)](https://travis-ci.org/mikemimik/collins)
 
+[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
+
 # API Design - External
 `.use(service-gear)`
 - test input
