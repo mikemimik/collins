@@ -63,7 +63,7 @@ class Collins extends Emitter {
       default:
 
         // INFO: not a supported type, throw error
-        throw new CollinsError('InvalidInput', {
+        throw new CollinsError('Invalid:Input', {
           details: 'invalid function params'
         });
     }
