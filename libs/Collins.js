@@ -34,14 +34,14 @@ class Collins extends Emitter {
   configure (dirPath) {
     if (dirPath) {
       this.configuration.setPath(dirPath);
-      this.configuration.configure.bind(this);
+      this.configuration.configure.call(this);
     } else {
       if (!this.configuration.path) {
         throw new CollinsError('Missing:Config', {
           details: 'no config path supplied'
         });
       } else {
-        this.configuration.configure.bind(this);
+        this.configuration.configure.call(this);
       }
     }
   }
