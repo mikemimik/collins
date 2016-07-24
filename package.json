@@ -23,10 +23,10 @@
   },
   "homepage": "https://github.com/mikemimik/collins#readme",
   "dependencies": {
-    "async": "^2.0.0",
+    "async": "^2.0.1",
     "convict": "^1.4.0",
     "eventemitter2": "^2.0.0",
-    "lodash": "^4.13.1",
+    "lodash": "^4.14.0",
     "winston": "^2.2.0"
   },
   "devDependencies": {
