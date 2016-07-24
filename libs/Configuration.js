@@ -4,6 +4,7 @@ const convict = require('convict');
 const Loader = require('../utils/Loader');
 const Config = require('../configs');
 const async = require('async');
+const path = require('path');
 const fs = require('fs');
 
 function Configuration () {
@@ -40,23 +41,24 @@ Configuration.prototype.configure = function configure () {
 };
 
 /**
- * @summary Function to set/validate path given for Configuration
+ * @summary Synchronous function to set/validate path given for Configuration
  *
  * @param {String} path to configuration directory
  */
 Configuration.prototype.setPath = function setPath (p) {
-  fs.stat(p, (err, stats) => {
-    if (err) {
-
-    }
-    if (stats.isDirectory()) {
-      this.path = p;
+  let resolvedPath = path.resolve(process.cwd(), p);
+  try {
+    let pathInfo = fs.statSync(resolvedPath);
+    if (pathInfo.isDirectory()) {
+      this.path = resolvedPath;
     } else {
       throw new CollinsError('Invalid:Input', {
-        details: 'invaild configuration directory'
+        details: 'config path supplied not directory'
       });
     }
-  });
+  } catch (e) {
+    throw CollinsError.convert('Invalid:Input', e);
+  }
 };
 
 module.exports = Configuration;
