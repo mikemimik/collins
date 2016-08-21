@@ -3,9 +3,9 @@ const CollinsError = require('./CollinsError');
 const convict = require('convict');
 const Loader = require('../utils/Loader');
 const Config = require('../configs');
-const async = require('async');
-const path = require('path');
-const fs = require('fs');
+const Async = require('async');
+const Path = require('path');
+const Fs = require('fs');
 
 function Configuration () {
   this.isConfigured = false;
@@ -22,7 +22,7 @@ function Configuration () {
  * @summary Function to initialize the configuration of system
  */
 Configuration.prototype.configure = function configure () {
-  async.series([
+  Async.series([
     Loader.init.bind(this),
     Loader.initConfig.bind(this),
     Loader.initServices.bind(this)
@@ -46,9 +46,9 @@ Configuration.prototype.configure = function configure () {
  * @param {String} path to configuration directory
  */
 Configuration.prototype.setPath = function setPath (p) {
-  let resolvedPath = path.resolve(process.cwd(), p);
+  let resolvedPath = Path.resolve(process.cwd(), p);
   try {
-    let pathInfo = fs.statSync(resolvedPath);
+    let pathInfo = Fs.statSync(resolvedPath);
     if (pathInfo.isDirectory()) {
       this.path = resolvedPath;
     } else {
