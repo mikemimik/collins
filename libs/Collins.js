@@ -22,7 +22,6 @@ class Collins extends Emitter {
       delimiter: ':'
     });
 
-    // TODO: check if config is valid
     this.services = [];
     this.configuration = new Configuration();
     this.Runtime = require('../utils/Runtime');

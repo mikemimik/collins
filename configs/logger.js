@@ -28,7 +28,7 @@ const logColors = {
 };
 
 const loggingOutputFilter = function (level, msg, meta) {
-  return this.constructor.name + ' > ' + msg;
+  return this.constructor.name + ' >> ' + msg;
 };
 
 module.exports = {

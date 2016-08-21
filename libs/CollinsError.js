@@ -50,7 +50,7 @@ class CollinsError extends Error {
     } else {
       this.message += '.';
     }
-    this.message += '\nSee \'data\' for details.';
+    // this.message += '. See \'data\' for details.';
   }
 
   static convert (type, error) {
