@@ -1,5 +1,5 @@
 {
-  "name": "collins",
+  "name": "collins-core",
   "version": "0.1.1",
   "description": "The glue for holding service-gears together.",
   "main": "index.js",
