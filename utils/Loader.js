@@ -80,7 +80,6 @@ class Loader {
    * @param {Function} next Callback function
    */
   static initConfigs (next) {
-    this.logger.debug('started initConfigs()'); // TESTING
     /**
      * INFO:
      *  - remove index.js (already processed)

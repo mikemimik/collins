@@ -43,7 +43,7 @@ Configuration.prototype.configure = function configure () {
 /**
  * @summary Synchronous function to set/validate path given for Configuration
  *
- * @param {String} path to configuration directory
+ * @param {String} p Path to configuration directory
  */
 Configuration.prototype.setPath = function setPath (p) {
   let resolvedPath = Path.resolve(process.cwd(), p);
