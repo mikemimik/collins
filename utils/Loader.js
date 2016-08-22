@@ -165,6 +165,19 @@ class Loader {
         .join();
     }
 
+    /**
+     * @desc A function which takes a component, which is an Object which
+     *       contains only one (1) property. The function will `switch` over
+     *       the property of the component and act accordingly. The function
+     *       will return a string representing the filename for the
+     *       configuration file for that component.
+     * @summary Construct the full filename of a given component.
+     * @param  {Object} component           Object with component information
+     * @param  {String} [component.service] The name portion of the service to
+     *                                      build a filename for.
+     * @return {String}                     Filename for the config of the
+     *                                      given component.
+     */
     function buildFilename (component) {
       switch (Object.keys(component).join().toLowerCase()) {
         case 'service':
