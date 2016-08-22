@@ -88,7 +88,7 @@ class Loader {
      *    `[..array..]`
      */
     // TODO: check if variable reference is safe
-    let serviceConfigFiles = sortConfigFiles(_(this.configuration.files).pull('index.js'));
+    let serviceConfigFiles = Helpers.sortConfigFiles(_(this.configuration.files).pull('index.js'));
     // INFO: get list of services attached to this instance
     let serviceNameList = this.serviceMap
       .keyArray()
