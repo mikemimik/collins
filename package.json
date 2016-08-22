@@ -4,8 +4,9 @@
   "description": "The glue for holding service-gears together.",
   "main": "index.js",
   "scripts": {
-    "test": "npm run lint && mocha tests/",
-    "lint": "semistandard"
+    "lint": "semistandard",
+    "mocha": "mocha ./test/*.test.js",
+    "test": "npm run lint && npm run mocha"
   },
   "repository": {
     "type": "git",
