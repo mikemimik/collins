@@ -1,5 +1,5 @@
 'use strict';
-const CollinsError = require('./collins-error');
+const CollinsError = require('collins-error');
 const convict = require('convict');
 const Loader = require('../utils/loader');
 const Config = require('../configs');

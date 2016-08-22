@@ -8,7 +8,7 @@
 
 // INFO: collins specific modules
 const Configuration = require('./configuration');
-const CollinsError = require('./collins-error');
+const CollinsError = require('collins-error');
 const ServiceGear = require('./service-gear');
 const Helpers = require('../utils/helpers');
 const Loader = require('../utils/loader');
