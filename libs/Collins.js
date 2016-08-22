@@ -7,11 +7,11 @@
 'use strict';
 
 // INFO: collins specific modules
-const Configuration = require('./Configuration');
+const Configuration = require('./configuration');
 const CollinsError = require('./collins-error');
 const ServiceGear = require('./service-gear');
 const Helpers = require('../utils/helpers');
-const Loader = require('../utils/Loader');
+const Loader = require('../utils/loader');
 
 // INFO: common modules
 const async = require('async');
