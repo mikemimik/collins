@@ -1,5 +1,6 @@
 'use strict';
 const CollinsError = require('../libs/collins-error');
+const Helpers = require('./helpers');
 const Config = require('../configs');
 const Async = require('async');
 const Path = require('path');
@@ -89,7 +90,9 @@ class Loader {
     // TODO: check if variable reference is safe
     let serviceConfigFiles = sortConfigFiles(_(this.configuration.files).pull('index.js'));
     // INFO: get list of services attached to this instance
-    let serviceNameList = this.services.map(s => reduceServiceName(s.name));
+    let serviceNameList = this.serviceMap
+      .keyArray()
+      .map(n => Helpers.reduceServiceName(n));
     // INFO: get list of services we have configs for (from config directory)
     let configNameList = _.chain(serviceConfigFiles)
       .map(f => f.split('.')[0])
