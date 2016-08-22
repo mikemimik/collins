@@ -5,6 +5,6 @@ const Collins = require('../libs/collins');
 
 describe('Collins', () => {
   it('should expose a constructor', () => {
-    assert(typeof Collins, 'function');
+    Assert.equal(typeof Collins, 'function');
   });
 });
