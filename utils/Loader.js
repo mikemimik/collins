@@ -112,7 +112,7 @@ class Loader {
       // INFO: get name of needed config files
       let neededConfigFiles = _.intersection(serviceNameList, configNameList);
       Async.each(neededConfigFiles, (configName, doneNeededFile) => {
-        let filename = buildFilename({ service: configName });
+        let filename = Helpers.buildFilename({ service: configName });
         let serviceConfigPath = Path.join(this.configuration.path, filename);
         // INFO: create javascript object from filepath
         let serviceConfig = require(serviceConfigPath);
