@@ -137,7 +137,7 @@ class Loader {
             // INFO: propogate error up
             doneNeededFile(errServiceConfig);
           } else {
-            this.serviceConfigMap[configName] = serviceConfig;
+            this.serviceMap.get(configName).config = serviceConfig;
             doneNeededFile(null);
           }
         });
