@@ -29,8 +29,7 @@ Configuration.prototype.configure = function configure () {
   ], (error, results) => {
     // INFO: we got an error from some init Loader
     if (error) {
-      this.logger.error(this.constructor.name, 'core:error:configuration:configure', error);
-      this.emit('error:configure', error);
+      this.logger.error(this.constructor.name, error);
     }
     results.forEach((result) => {
       if (result) {
