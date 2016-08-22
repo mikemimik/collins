@@ -1,6 +1,6 @@
 'use strict';
 
-const CollinsError = require('../libs/collins-error');
+const CollinsError = require('collins-error');
 
 /**
  * @desc Breaks down the full service name given to the function into a
