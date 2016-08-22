@@ -7,9 +7,11 @@
 'use strict';
 
 // INFO: collins specific modules
-const Loader = require('../utils/Loader');
 const Configuration = require('./Configuration');
 const CollinsError = require('./collins-error');
+const ServiceGear = require('./service-gear');
+const Helpers = require('../utils/helpers');
+const Loader = require('../utils/Loader');
 
 // INFO: common modules
 const async = require('async');
@@ -22,8 +24,12 @@ class Collins extends Emitter {
       delimiter: ':'
     });
 
-    this.services = [];
-    this.serviceConfigMap = {};
+    this.serviceMap = new Map();
+    this.serviceMap.keyArray = function keyArray () {
+      let r = [];
+      for (let k of this.keys()) { r.push(k); }
+      return r;
+    };
     this.configuration = new Configuration();
     this.Runtime = require('../utils/Runtime');
     if (dirPath) {
@@ -57,8 +63,11 @@ class Collins extends Emitter {
         break;
       case 'function':
 
-        // INFO: package already required, just push to array
-        this.services.push(serviceGear);
+        // INFO: package already required, just set into map
+        this.serviceMap.set(
+          Helpers.reduceServiceName(serviceGear.name),
+          new ServiceGear(serviceGear)
+        );
         break;
       default:
 
