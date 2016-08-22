@@ -147,27 +147,6 @@ class Loader {
         next(errNeededFiles);
       });
     }
-
-    /**
-     * @desc Sorts an array of configuration files for the Collins system.
-     *       Each filename follows a paradigm. The first being
-     *       `serviceGearName.config.js` for the name of a configuration file
-     *       for a service gear. The second being
-     *       `serviceGearName.cogName.config.js` for the name of a configuration
-     *       file for the cog of a specific service gear.
-     * @summary Sort array of configuration filenames
-     * @param  {String[]} files Array of filenames for configuration files.
-     * @return {String[]}       Sorted array of filenames.
-     */
-    function sortConfigFiles (files) {
-      return files
-        // INFO: sort by service gear
-        .sortBy(f => f.split('.')[0])
-        // INFO: sort by cog
-        .sortBy(f => f.split('.').length)
-        // INFO: pull value from chaining function
-        .value();
-    }
   }
 
   static initServices (next) {
