@@ -24,7 +24,7 @@ function Configuration () {
 Configuration.prototype.configure = function configure () {
   Async.series([
     Loader.init.bind(this),
-    Loader.initConfig.bind(this),
+    Loader.initConfigs.bind(this),
     Loader.initServices.bind(this)
   ], (error, results) => {
     // INFO: we got an error from some init Loader
