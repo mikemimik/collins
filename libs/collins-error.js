@@ -1,7 +1,7 @@
 'use strict';
 
 const ErrorTypes = require('./error-types');
-const async = require('async');
+const Async = require('async');
 const _ = require('lodash');
 
 /**
@@ -14,7 +14,7 @@ class CollinsError extends Error {
     super();
     this.name = this.constructor.name;
     this.data = data || {};
-    async.each(
+    Async.each(
       type.split(':'),
       function checkType (errorType, cb) {
         if (!_.includes(ErrorTypes, errorType.toLowerCase())) {
