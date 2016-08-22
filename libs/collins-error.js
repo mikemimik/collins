@@ -1,6 +1,6 @@
 'use strict';
 
-const ErrorTypes = require('./ErrorTypes');
+const ErrorTypes = require('./error-types');
 const async = require('async');
 const _ = require('lodash');
 
