@@ -1,120 +1,206 @@
 'use strict';
 const CollinsError = require('../libs/CollinsError');
 const Config = require('../configs');
-const async = require('async');
-const path = require('path');
-const fs = require('fs');
+const Async = require('async');
+const Path = require('path');
+const Fs = require('fs');
 const _ = require('lodash');
 
 class Loader {
+
+  /**
+   * @desc init function reads the current path given to the configuration
+   *       object, then it filters non `.js` files from the array of file
+   *       names. The function will then check to see if the `index.js` file
+   *       is present in the array of filenames; if it's _not_ present then
+   *       an error is thrown. If the file is present then that file is
+   *       `required` and loaded into the `configObj` which is present on
+   *       the configuration object. `validate()` is then called on that
+   *       config file. If no errors are thrown, the `logger` is then
+   *       configured and the `next` callback function is then called
+   *       with `null`.
+   * @summary core config validation and logger initialization
+   * @static
+   * @param {Function} next Callback function
+   */
   static init (next) {
-    this.logger = new Config.logger.Init({
-      level: this.config.logLevel,
-      transports: Config.logger.transports,
-      filters: [ Config.logger.filter.bind(this) ],
-      levels: Config.logger.logLevels.core,
-      colors: Config.logger.logColors
-    });
-
-    this.logger.core(this.constructor.name, 'Core#start');
-    next(null);
-  }
-
-  static initConfig (next) {
-    // 1) read directory
-    fs.readdir(this.configuration.path, (err, files) => {
+    Fs.readdir(this.configuration.path, (err, files) => {
       if (err) {
-        next(err);
+        let readError = CollinsError.convert('Missing:File', err);
+        next(readError);
       } else {
-        // 2) sort directory list of files
-        // 2.1) ignore unknown files (eg. not .js, or correct naming convention)
-        files = _.chain(files)
-
-          // INFO: filter out any non .js files
-          .filter(f => f.split('.')[f.split('.').length - 1] === 'js')
-          // INFO: sort by service gear
-          .sortBy(f => f.split('.')[0])
-          // INFO: sort by cog
-          .sortBy(f => f.split('.').length)
-          .value(); // INFO: pull value from chaining function
-
-        // 3) validate core (index.js) config
-        // INFO: check for index.js
-        if (_.find(files, v => v === 'index.js') === -1) {
+        // INFO: filter out unusable files
+        // INFO: broke up line below for readbility
+        this.configuration.files = _.filter(
+          files,
+          f => f.split('.')[f.split('.').length - 1] === 'js'
+        );
+        let filePresent = _.find(this.configuration.files, f => f === 'index.js');
+        if (!filePresent) {
+          // INFO: 'index.js' was not found, throw error
           let noConfigError = new CollinsError('Missing:Config', {
-            details: 'no index config supplied'
+            details: `no index.js config path: ${this.configuration.path}`
           });
           next(noConfigError);
         } else {
-          let configFile = require(path.join(this.configuration.path, 'index.js'));
+          let configFile = require(Path.join(this.configuration.path, 'index.js'));
           this.configuration.configObj.load(configFile);
-
-          // INFO: check if config file is valid
           try {
             this.configuration.configObj.validate();
           } catch (e) {
             // INFO: catch error when config invalid
-            let validationError = CollinsError.convert('error:loader:initconfig', e);
+            let validationError = CollinsError.convert('Invalid:Config', e);
             next(validationError);
           }
-
-          // 4) compare list of conif files against modules included in instance
-          // INFO: remove index.js (already processed)
-          files = _.pull(files, 'index.js');
-          let serviceList = this.services.map(s => s.name);
-          let configNameList = _.chain(files)
-            .map(file => file.split('.')[0])
-            .uniq()
-            .value();
-          let missingConfigs = _.difference(serviceList, configNameList);
-          if (missingConfigs.length) {
-            // INFO: missing configs, throw error
-            let noConfigError = new CollinsError('Missing:Config', {
-              details: 'missing config for the following services: ' + missingConfigs
-            });
-            next(noConfigError);
-          } else {
-            // INFO: not missing configs, continue
-            this.configuration.files = files;
-            next(null);
-          }
+          // INFO: at this point the core config file has been loaded/validated
+          this.logger = new Config.logger.Init({
+            level: this.configuration.configObj.get('logLevel'),
+            transports: Config.logger.transports,
+            // filters: [ Config.logger.filter.bind(this) ],
+            levels: Config.logger.logLevels.core,
+            colors: Config.logger.logColors
+          });
+          next(null);
         }
       }
     });
   }
 
-  static initServices (next) {
-    this.logger.core(this.constructor.name, 'Loader#initServices');
-    async.each(this.services, (Service, done) => {
+  /**
+   * @desc initConfigs function sorts the filenames listed in the
+   *       `this.configuration.files` array property. The function then
+   *       collects all the names of the service gears that have been included
+   *       in this instance of the application, and compares those names
+   *       against the list of config filenames. If there is a service gear
+   *       which doesn't have a corresponding config file then an error
+   *       is thrown.
+   * @summary service gear / config file cross check
+   * @static
+   * @param {Function} next Callback function
+   */
+  static initConfigs (next) {
+    this.logger.debug('started initConfigs()'); // TESTING
+    /**
+     * INFO:
+     *  - remove index.js (already processed)
+     *  - using `_([..array..]).pull('..item..')` syntax to avoid mutating
+     *    `[..array..]`
+     */
+    // TODO: check if variable reference is safe
+    let serviceConfigFiles = sortConfigFiles(_(this.configuration.files).pull('index.js'));
+    // INFO: get list of services attached to this instance
+    let serviceNameList = this.services.map(s => breakDownServiceName(s.name));
+    // INFO: get list of services we have configs for (from config directory)
+    let configNameList = _.chain(serviceConfigFiles)
+      .map(f => f.split('.')[0])
+      .uniq()
+      .value();
+    // INFO: compare list of modules included in instance against config files
+    let missingConfigs = _.difference(serviceNameList, configNameList);
+    if (missingConfigs.length) {
+      // INFO: missing configs, throw error
+      let noConfigError = new CollinsError('Missing:Config', {
+        details: 'missing config for services: ' + missingConfigs
+      });
+      next(noConfigError);
+    } else {
+      // INFO: we have a corresponding config file for services in instance.
+      // TODO: deal with inheritance in the config files
+      // INFO: get name of needed config files
+      let neededConfigFiles = _.intersection(serviceNameList, configNameList);
+      Async.each(neededConfigFiles, (configName, doneNeededFile) => {
+        let filename = buildFilename({ service: configName });
+        let serviceConfigPath = Path.join(this.configuration.path, filename);
+        // INFO: create javascript object from filepath
+        let serviceConfig = require(serviceConfigPath);
+        // INFO: check each property from the config and inherit from `this`
+        Async.each(Object.keys(serviceConfig), (prop, doneServiceProp) => {
+          if (serviceConfig[prop] === 'inherit') {
+            if (this.configuration.configObj.has(prop)) {
+              serviceConfig[prop] = this.configuration.configObj.get(prop);
+              doneServiceProp(null);
+            } else {
+              let invalidPropError = new CollinsError('Invalid:Config', {
+                details: filename + ' has invalid key/value pair'
+              });
+              doneServiceProp(invalidPropError);
+            }
+          } else {
+            doneServiceProp(null);
+          }
+          // INFO: end of async.each(serviceConfig)
+        }, (errServiceConfig) => {
+          // INFO: if (errServiceConfig) invalid key/value pair
+          if (errServiceConfig) {
+            // INFO: propogate error up
+            doneNeededFile(errServiceConfig);
+          } else {
+            this.serviceConfigMap[configName] = serviceConfig;
+            doneNeededFile(null);
+          }
+        });
+      }, (errNeededFiles) => {
+        // INFO: if err happens, invalid config file props
+        next(errNeededFiles);
+      });
+    }
+
+    function breakDownServiceName (fullServiceName) {
       let regEx = /(?=[A-Z])/;
-      let configFile = Service.name
+      // INFO: split the name of the module
+      return fullServiceName.split(regEx)
+        // INFO: convert to lower case
+        .map(x => x.toLowerCase())
+        // INFO: remove the 'collins' convention from module name
+        .filter(n => n !== 'collins')
+        // INFO: coerce array into string
+        .join();
+    }
+
+    function buildFilename (component) {
+      switch (Object.keys(component).join().toLowerCase()) {
+        case 'service':
+          return component.service + '.config.js';
+        default:
+          throw new CollinsError('Invalid:Input', {
+            details: 'invalid function params'
+          });
+      }
+    }
+
+    function sortConfigFiles (files) {
+      return files
+        // INFO: sort by service gear
+        .sortBy(f => f.split('.')[0])
+        // INFO: sort by cog
+        .sortBy(f => f.split('.').length)
+        // INFO: pull value from chaining function
+        .value();
+    }
+  }
+
+  static initServices (next) {
+    // TODO: pass all relevant config files to each service
+    this.logger.core(this.constructor.name, 'Loader#initServices');
+    Async.each(this.services, (Service, done) => {
+      let regEx = /(?=[A-Z])/;
+      let configFileName = Service.name
         .split(regEx)
         .map(x => x.toLowerCase())
         .filter(n => n !== 'collins')
         .join() + '.config.js';
-      configFile = path.join(__dirname, '..', 'configs', configFile);
-      fs.stat(configFile, (err, stats) => {
-        if (err) {
-          let data = { details: 'Could not find config file for service.' };
-          let error = new CollinsError('Invalid:File', data);
-          done(error);
-        } else {
-          // INFO: I have no idea how this works. Where is the inheritance?
-          // INFO: object referencing? Is that how this works?
-          const serviceConfig = require(configFile);
-          // console.log('serviceConfig:', serviceConfig); // TESTING
-          let service = new Service(serviceConfig);
-          this.services[this.services.indexOf(Service)] = service;
-          service.init((err) => {
-            /**
-             * err:
-             *  - `null`: everything is fine
-             *  - `error`: service failed to initialize
-             */
-            done(err);
-          });
-        }
+
+      let configFile = require(Path.join(this.configuration.path, configFileName));
+      let service = new Service();
+      service.init((configFile, initErr) => {
+        /**
+        * err:
+        *  - `null`: everything is fine
+        *  - `error`: service failed to initialize
+        */
+        done(initErr);
       });
+      this.services[this.services.indexOf(Service)] = service;
     }, (err) => {
       this.logger.core(this.constructor.name, 'Loader#initServices', 'complete');
       next(err);
@@ -123,7 +209,7 @@ class Loader {
 
   static connectServices (next) {
     this.logger.core(this.constructor.name, 'Loader#connectServices');
-    async.each(this.services, (service, done) => {
+    Async.each(this.services, (service, done) => {
       service.connect((err) => {
         done(err);
       });

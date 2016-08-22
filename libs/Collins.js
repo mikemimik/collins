@@ -23,6 +23,7 @@ class Collins extends Emitter {
     });
 
     this.services = [];
+    this.serviceConfigMap = {};
     this.configuration = new Configuration();
     this.Runtime = require('../utils/Runtime');
     if (dirPath) {
