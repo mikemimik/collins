@@ -25,12 +25,12 @@
   "dependencies": {
     "async": "^2.0.1",
     "convict": "^1.4.0",
-    "eventemitter2": "^2.0.0",
-    "lodash": "^4.14.0",
+    "eventemitter2": "^2.1.0",
+    "lodash": "^4.15.0",
     "winston": "^2.2.0"
   },
   "devDependencies": {
-    "mocha": "^2.5.3",
+    "mocha": "^3.0.2",
     "replify": "^1.2.0",
     "semistandard": "^8.0.0"
   },
