@@ -151,28 +151,26 @@ class Loader {
   static initServices (next) {
     // TODO: pass all relevant config files to each service
     this.logger.core(this.constructor.name, 'Loader#initServices');
-    Async.each(this.services, (Service, done) => {
-      let regEx = /(?=[A-Z])/;
-      let configFileName = Service.name
-        .split(regEx)
-        .map(x => x.toLowerCase())
-        .filter(n => n !== 'collins')
-        .join() + '.config.js';
-
-      let configFile = require(Path.join(this.configuration.path, configFileName));
-      let service = new Service();
-      service.init((configFile, initErr) => {
+    Async.each(this.serviceMap.keyArray(), (key, doneServiceInit) => {
+      // INFO: step-by-step because constructor must start with capital letter
+      let ServiceCreator = this.serviceMap.get(key).Creator;
+      let service = new ServiceCreator();
+      service.init(this.serviceMap.get(key).config, (initErr) => {
         /**
         * err:
         *  - `null`: everything is fine
         *  - `error`: service failed to initialize
         */
-        done(initErr);
+        if (initErr) {
+          doneServiceInit(initErr);
+        } else {
+          this.serviceMap.get(key).instance = service;
+          doneServiceInit(null);
+        }
       });
-      this.services[this.services.indexOf(Service)] = service;
-    }, (err) => {
+    }, (serviceErr) => {
       this.logger.core(this.constructor.name, 'Loader#initServices', 'complete');
-      next(err);
+      next(serviceErr);
     });
   }
 
