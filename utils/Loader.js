@@ -89,7 +89,7 @@ class Loader {
     // TODO: check if variable reference is safe
     let serviceConfigFiles = sortConfigFiles(_(this.configuration.files).pull('index.js'));
     // INFO: get list of services attached to this instance
-    let serviceNameList = this.services.map(s => breakDownServiceName(s.name));
+    let serviceNameList = this.services.map(s => reduceServiceName(s.name));
     // INFO: get list of services we have configs for (from config directory)
     let configNameList = _.chain(serviceConfigFiles)
       .map(f => f.split('.')[0])
@@ -145,7 +145,7 @@ class Loader {
       });
     }
 
-    function breakDownServiceName (fullServiceName) {
+    function reduceServiceName (fullServiceName) {
       let regEx = /(?=[A-Z])/;
       // INFO: split the name of the module
       return fullServiceName.split(regEx)
