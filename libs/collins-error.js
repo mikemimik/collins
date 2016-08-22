@@ -6,7 +6,6 @@ const _ = require('lodash');
 
 /**
  * @summary Error class for delivering errors with Collins
- *
  * @param {String} type Error type name
  * @param {Object} data Data given to the error
  */

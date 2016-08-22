@@ -1,5 +1,5 @@
 'use strict';
-const CollinsError = require('../libs/CollinsError');
+const CollinsError = require('../libs/collins-error');
 const Config = require('../configs');
 const Async = require('async');
 const Path = require('path');
