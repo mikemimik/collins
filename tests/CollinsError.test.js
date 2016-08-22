@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const CollinsError = require('../libs/CollinsError');
+const CollinsError = require('../libs/collins-error');
 
 describe('CollinsError', () => {
   let error = new CollinsError('TestError', 'test');
