@@ -1,1 +1,1 @@
-module.exports = require('./libs/Collins');
+module.exports = require('./libs/collins');
