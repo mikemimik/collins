@@ -179,6 +179,11 @@ class Loader {
      *                                      given component.
      */
     function buildFilename (component) {
+      if (Object.keys(component).length > 1) {
+        throw new CollinsError('Invalid:Input', {
+          details: 'too many properties on input object'
+        });
+      }
       switch (Object.keys(component).join().toLowerCase()) {
         case 'service':
           return component.service + '.config.js';
