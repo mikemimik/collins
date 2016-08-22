@@ -1,4 +1,5 @@
 'use strict';
+
 const CollinsError = require('collins-error');
 const Helpers = require('./helpers');
 const Config = require('../configs');

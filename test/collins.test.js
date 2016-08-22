@@ -1,6 +1,6 @@
 'use strict';
 
-const assert = require('assert');
+const Assert = require('assert');
 const Collins = require('../libs/collins');
 
 describe('Collins', () => {
