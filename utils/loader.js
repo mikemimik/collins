@@ -11,6 +11,7 @@ const _ = require('lodash');
 class Loader {
 
   /**
+   * @static
    * @desc init function reads the current path given to the configuration
    *       object, then it filters non `.js` files from the array of file
    *       names. The function will then check to see if the `index.js` file
@@ -22,7 +23,6 @@ class Loader {
    *       configured and the `next` callback function is then called
    *       with `null`.
    * @summary core config validation and logger initialization
-   * @static
    * @param {Function} next Callback function
    */
   static init (next) {
@@ -60,6 +60,7 @@ class Loader {
             levels: Config.logger.logLevels.core,
             colors: Config.logger.logColors
           });
+          this.logger.core(this.constructor.name, 'Loader#init', 'complete');
           next(validationError);
         }
       }
@@ -67,6 +68,7 @@ class Loader {
   }
 
   /**
+   * @static
    * @desc initConfigs function sorts the filenames listed in the
    *       `this.configuration.files` array property. The function then
    *       collects all the names of the service gears that have been included
@@ -75,10 +77,10 @@ class Loader {
    *       which doesn't have a corresponding config file then an error
    *       is thrown.
    * @summary service gear / config file cross check
-   * @static
    * @param {Function} next Callback function
    */
   static initConfigs (next) {
+    this.logger.core(this.constructor.name, 'Loader#initConfigs');
     /**
      * INFO:
      *  - remove index.js (already processed)
@@ -142,6 +144,7 @@ class Loader {
         });
       }, (errNeededFiles) => {
         // INFO: if err happens, invalid config file props
+        this.logger.core(this.constructor.name, 'Loader#initConfigs', 'complete');
         next(errNeededFiles);
       });
     }

@@ -19,11 +19,8 @@ const Emitter = require('eventemitter2').EventEmitter2;
 
 class Collins extends Emitter {
   constructor (dirPath) {
-    super({
-      wildcard: true,
-      delimiter: ':'
-    });
-
+    super({ wildcard: true, delimiter: ':' });
+    this.logger = null;
     this.serviceMap = new Map();
     this.serviceMap.keyArray = function keyArray () {
       let r = [];
