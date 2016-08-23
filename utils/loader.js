@@ -47,14 +47,12 @@ class Loader {
         } else {
           let configFile = require(Path.join(this.configuration.path, 'index.js'));
           this.configuration.configObj.load(configFile);
+          let validationError = null;
           try {
             this.configuration.configObj.validate();
           } catch (e) {
-            // INFO: catch error when config invalid
-            let validationError = CollinsError.convert('Invalid:Config', e);
-            next(validationError);
+            validationError = CollinsError.convert('Invalid:Config', e);
           }
-          // INFO: at this point the core config file has been loaded/validated
           this.logger = new Config.logger.Init({
             level: this.configuration.configObj.get('logLevel'),
             transports: Config.logger.transports,
@@ -62,7 +60,7 @@ class Loader {
             levels: Config.logger.logLevels.core,
             colors: Config.logger.logColors
           });
-          next(null);
+          next(validationError);
         }
       }
     });
