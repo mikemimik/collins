@@ -25,7 +25,7 @@
   "homepage": "https://github.com/mikemimik/collins#readme",
   "dependencies": {
     "async": "^2.0.1",
-    "collins-error": "^1.0.0",
+    "collins-error": "^1.1.0",
     "convict": "^1.4.0",
     "eventemitter2": "^2.1.0",
     "lodash": "^4.15.0",
