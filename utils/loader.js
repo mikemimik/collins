@@ -160,7 +160,7 @@ class Loader {
       // INFO: step-by-step because constructor must start with capital letter
       let ServiceCreator = this.serviceMap.get(key).Creator;
       let service = new ServiceCreator();
-      service.init(this.serviceMap.get(key).config, (initErr) => {
+      service.init(this.serviceMap.get(key), (initErr) => {
         /**
         * err:
         *  - `null`: everything is fine
