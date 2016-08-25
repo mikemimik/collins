@@ -79,12 +79,9 @@ class Collins extends Emitter {
   start (callback) {
     this.logger.debug(this.constructor.name, 'Core#start', { from: 'core' });
     async.series([
-      Loader.init.bind(this),
-      Loader.initConfig.bind(this),
-      Loader.initServices.bind(this),
-      Loader.connectServices.bind(this),
-      Loader.initServiceCogs.bind(this),
-      Loader.initActions.bind(this)
+      Loader.connectServices.bind(this)
+      // Loader.initServiceCogs.bind(this),
+      // Loader.initActions.bind(this)
     ], (error, results) => {
       // INFO: we got an error from some init loader
       if (error) {
