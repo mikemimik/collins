@@ -1,7 +1,5 @@
 'use strict';
 
-const logger = require('./logger');
-
 let defaultSchema = {
   name: {
     doc: 'Name of this instance of the application',
@@ -15,7 +13,7 @@ let defaultSchema = {
   },
   logLevel: {
     doc: 'Level at which to log events and errors',
-    format: Object.keys(logger.logLevels.core),
+    format: [ 'error', 'warn', 'info', 'verbose', 'debug', 'silly' ],
     default: 'debug'
   }
 };
