@@ -152,6 +152,11 @@ class Loader {
     // TODO: pass all relevant config files to each service
     this.logger.debug(this.constructor.name, 'Loader#initServices', { from: 'core' });
     Async.each(this.serviceMap.keyArray(), (key, doneServiceInit) => {
+      // INFO: attach a logger to `ServiceGear` object for each service
+      this.serviceMap.get(key).logger = new Config.logger.Init({
+        level: this.configuration.configObj.get('logLevel'),
+        transports: Config.logger.transports
+      });
       // INFO: step-by-step because constructor must start with capital letter
       let ServiceCreator = this.serviceMap.get(key).Creator;
       let service = new ServiceCreator();
