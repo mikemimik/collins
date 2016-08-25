@@ -33,7 +33,7 @@ Configuration.prototype.configure = function configure () {
     }
     results.forEach((result) => {
       if (result) {
-        this.logger.info(this.constructor.name, 'core:configure', result);
+        this.logger.verbose(this.constructor.name, 'core:configure', result);
       }
     });
   });

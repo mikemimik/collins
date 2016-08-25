@@ -58,7 +58,7 @@ class Loader {
             transports: Config.logger.transports,
             filters: [ Config.logger.filter ]
           });
-          this.logger.core(this.constructor.name, 'Loader#init', 'complete');
+          this.logger.debug(this.constructor.name, 'Loader#init', 'complete', { from: 'core' });
           next(validationError);
         }
       }
@@ -78,7 +78,7 @@ class Loader {
    * @param {Function} next Callback function
    */
   static initConfigs (next) {
-    this.logger.core(this.constructor.name, 'Loader#initConfigs');
+    this.logger.debug(this.constructor.name, 'Loader#initConfigs', { from: 'core' });
     /**
      * INFO:
      *  - remove index.js (already processed)
@@ -142,7 +142,7 @@ class Loader {
         });
       }, (errNeededFiles) => {
         // INFO: if err happens, invalid config file props
-        this.logger.core(this.constructor.name, 'Loader#initConfigs', 'complete');
+        this.logger.debug(this.constructor.name, 'Loader#initConfigs', 'complete', { from: 'core' });
         next(errNeededFiles);
       });
     }
@@ -150,7 +150,7 @@ class Loader {
 
   static initServices (next) {
     // TODO: pass all relevant config files to each service
-    this.logger.core(this.constructor.name, 'Loader#initServices');
+    this.logger.debug(this.constructor.name, 'Loader#initServices', { from: 'core' });
     Async.each(this.serviceMap.keyArray(), (key, doneServiceInit) => {
       // INFO: step-by-step because constructor must start with capital letter
       let ServiceCreator = this.serviceMap.get(key).Creator;
@@ -169,33 +169,33 @@ class Loader {
         }
       });
     }, (serviceErr) => {
-      this.logger.core(this.constructor.name, 'Loader#initServices', 'complete');
+      this.logger.debug(this.constructor.name, 'Loader#initServices', 'complete', { from: 'core' });
       next(serviceErr);
     });
   }
 
   static connectServices (next) {
-    this.logger.core(this.constructor.name, 'Loader#connectServices');
     Async.each(this.services, (service, done) => {
       service.connect((err) => {
         done(err);
+    this.logger.debug(this.constructor.name, 'Loader#connectServices');
       });
     }, (err) => {
       if (err) {
         this.logger.error(this.constructor.name, 'Loader#connectServices', err);
       }
-      this.logger.core(this.constructor.name, 'Loader#connectServices', 'complete');
+      this.logger.debug(this.constructor.name, 'Loader#connectServices', 'complete', { from: 'core' });
       next(err);
     });
   }
 
   static initServiceCogs (next) {
-    this.logger.core(this.constructor.name, 'Loader#initServiceCogs');
+    this.logger.debug(this.constructor.name, 'Loader#initServiceCogs', { from: 'core' });
     next(null);
   }
 
   static initActions (next) {
-    this.logger.core(this.constructor.name, 'Loader#initActions');
+    this.logger.debug(this.constructor.name, 'Loader#initActions', { from: 'core' });
     next(null);
   }
 

@@ -77,6 +77,7 @@ class Collins extends Emitter {
   }
 
   start (callback) {
+    this.logger.debug(this.constructor.name, 'Core#start', { from: 'core' });
     async.series([
       Loader.init.bind(this),
       Loader.initConfig.bind(this),
@@ -92,12 +93,12 @@ class Collins extends Emitter {
       }
       results.forEach((result) => {
         if (result) {
-          this.logger.info(this.constructor.name, 'Core#start', result);
+          this.logger.verbose(this.constructor.name, 'Core#start', result);
         }
       });
 
       // INFO: all the initializations have been completed
-      this.logger.core(this.constructor.name, 'Core#start', 'complete');
+      this.logger.debug(this.constructor.name, 'Core#start', 'complete', { from: 'core' });
       if (callback && typeof callback === 'function') {
         callback(this);
       }
