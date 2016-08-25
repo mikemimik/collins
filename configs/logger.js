@@ -4,7 +4,7 @@ const Winston = require('winston');
 
 const CollinsDefault = new Winston.transports.Console({
   colorize: true,
-  prettyPrint: true,
+  prettyPrint: function removeMeta () { return ''; },
   depth: 1
 });
 
