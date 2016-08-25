@@ -56,9 +56,7 @@ class Loader {
           this.logger = new Config.logger.Init({
             level: this.configuration.configObj.get('logLevel'),
             transports: Config.logger.transports,
-            // filters: [ Config.logger.filter.bind(this) ],
-            levels: Config.logger.logLevels.core,
-            colors: Config.logger.logColors
+            filters: [ Config.logger.filter ]
           });
           this.logger.core(this.constructor.name, 'Loader#init', 'complete');
           next(validationError);
