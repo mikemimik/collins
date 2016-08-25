@@ -1,6 +1,7 @@
 'use strict';
 
 const Winston = require('winston');
+const Colors = require('colors/safe');
 
 const CollinsDefault = new Winston.transports.Console({
   colorize: true,
