@@ -27,8 +27,13 @@ const logColors = {
   verbose: 'grey', debug: 'blue'
 };
 
-const loggingOutputFilter = function (level, msg, meta) {
-  return this.constructor.name + ' >> ' + msg;
+const loggingOutputFilter = function loggingOutputFilter (level, msg, meta) {
+  if (meta) {
+    if (meta.from) {
+      return '<' + Colors.cyan(meta.from) + '> ' + msg;
+    }
+  }
+  return msg;
 };
 
 module.exports = {
