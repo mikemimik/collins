@@ -47,6 +47,7 @@ class Collins extends Emitter {
         this.configuration.configure.call(this);
       }
     }
+    return this;
   }
 
   include (serviceGear) {
