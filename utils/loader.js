@@ -180,10 +180,10 @@ class Loader {
   }
 
   static connectServices (next) {
-    Async.each(this.services, (service, done) => {
-      service.connect((err) => {
-        done(err);
     this.logger.debug(this.constructor.name, 'Loader#connectServices');
+    Async.each(this.serviceMap.keyArray(), (key, doneService) => {
+      this.serviceMap.get(key).instance.connect((err) => {
+        doneService(err);
       });
     }, (err) => {
       if (err) {
