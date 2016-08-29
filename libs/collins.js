@@ -7,9 +7,9 @@
 'use strict';
 
 // INFO: collins specific modules
+const ServiceGearWrapper = require('./service-gear-wrapper');
 const Configuration = require('./configuration');
 const CollinsError = require('collins-error');
-const ServiceGear = require('./service-gear');
 const Helpers = require('../utils/helpers');
 const Loader = require('../utils/loader');
 
@@ -64,7 +64,7 @@ class Collins extends Emitter {
         // INFO: package already required, just set into map
         this.serviceMap.set(
           Helpers.reduceServiceName(serviceGear.name),
-          new ServiceGear(serviceGear)
+          new ServiceGearWrapper(serviceGear)
         );
         break;
       default:

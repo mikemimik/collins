@@ -2,7 +2,7 @@
 
 const CollinsError = require('collins-error');
 
-class ServiceGear {
+class ServiceGearWrapper {
   constructor (gear) {
     if (typeof gear !== 'function') {
       throw new CollinsError('invalid function call');
@@ -14,4 +14,4 @@ class ServiceGear {
   }
 }
 
-module.exports = ServiceGear;
+module.exports = ServiceGearWrapper;
