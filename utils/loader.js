@@ -203,57 +203,6 @@ class Loader {
     this.logger.debug(this.constructor.name, 'Loader#initActions', { from: 'core' });
     next(null);
   }
-
-  static validateConfig (config) {
-    // TODO: validate config file
-    let name = config.name;
-    let userAgent = config.userAgent;
-    let logLevel = config.logLevel;
-    let errorObj = {
-      type: 'Invalid:Input',
-      reasons: []
-    };
-
-    // TODO: validate name prop
-    if (name === null || name === undefined) {
-      /* emit error */
-      errorObj.reasons.push('config.name: missing');
-    } else {
-      if (hasSpaces(name)) {
-        errorObj.reasons.push('config.name: no spaces allowed');
-      }
-    }
-
-    // TODO: validate userAgent prop
-    if (userAgent === null || userAgent === undefined) {
-      /* emit error */
-      errorObj.reasons.push('config.userAgent missing');
-    } else {
-      if (hasSpaces(userAgent)) {
-        errorObj.reasons.push('config.userAgent: no spaces allowed');
-      }
-    }
-
-    // TODO: validate logLevel prop
-    if (logLevel === null || logLevel === undefined) {
-      /* emit error */
-      errorObj.reasons.push('config.logLevel missing');
-    }
-    if (errorObj.reasons.length > 0) {
-      /* emit error */
-      throw new CollinsError(errorObj.type, errorObj);
-    } else {
-      return config;
-    }
-
-    function hasSpaces (prop) {
-      if (prop.split(' ').length > 1) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
 }
 
 module.exports = Loader;
