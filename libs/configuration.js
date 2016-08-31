@@ -36,6 +36,7 @@ Configuration.prototype.configure = function configure () {
         this.logger.verbose(this.constructor.name, 'core:configure', result);
       }
     });
+    this.emit('ready', this);
   });
 };
 

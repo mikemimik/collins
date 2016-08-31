@@ -96,6 +96,7 @@ class Collins extends Emitter {
 
       // INFO: all the initializations have been completed
       this.logger.debug(this.constructor.name, 'Core#start', 'complete', { from: 'core' });
+      this.emit('started', this);
       if (callback && typeof callback === 'function') {
         callback(this);
       }

@@ -54,6 +54,7 @@ class Loader {
             validationError = CollinsError.convert('Invalid:Config', e);
           }
           this.logger = CoreHelper.getLogger(this.configuration.configObj.get('logLevel'), 'core');
+          this.emit('done:init', this);
           this.logger.debug(this.constructor.name, 'Loader#init', 'complete', { from: 'core' });
           next(validationError);
         }
@@ -138,6 +139,7 @@ class Loader {
         });
       }, (errNeededFiles) => {
         // INFO: if err happens, invalid config file props
+        this.emit('done:initConfig', this);
         this.logger.debug(this.constructor.name, 'Loader#initConfigs', 'complete', { from: 'core' });
         next(errNeededFiles);
       });
@@ -167,6 +169,7 @@ class Loader {
         }
       });
     }, (serviceErr) => {
+      this.emit('done:initServices', this);
       this.logger.debug(this.constructor.name, 'Loader#initServices', 'complete', { from: 'core' });
       next(serviceErr);
     });
@@ -180,8 +183,10 @@ class Loader {
       });
     }, (err) => {
       if (err) {
+        this.emit('error:connectServices', this, err);
         this.logger.error(this.constructor.name, 'Loader#connectServices', err);
       }
+      this.emit('done:connectServices', this);
       this.logger.debug(this.constructor.name, 'Loader#connectServices', 'complete', { from: 'core' });
       next(err);
     });
