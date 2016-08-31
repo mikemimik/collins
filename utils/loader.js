@@ -173,7 +173,7 @@ class Loader {
   }
 
   static connectServices (next) {
-    this.logger.debug(this.constructor.name, 'Loader#connectServices');
+    this.logger.debug(this.constructor.name, 'Loader#connectServices', { from: 'core' });
     Async.each(this.serviceMap.keyArray(), (key, doneService) => {
       this.serviceMap.get(key).instance.connect((err) => {
         doneService(err);
