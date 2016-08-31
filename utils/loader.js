@@ -2,7 +2,7 @@
 
 const CollinsError = require('collins-error');
 const Helpers = require('./helpers');
-const Config = require('../configs');
+const CoreHelper = require('collins-core-helper');
 const Async = require('async');
 const Path = require('path');
 const Fs = require('fs');
@@ -53,11 +53,7 @@ class Loader {
           } catch (e) {
             validationError = CollinsError.convert('Invalid:Config', e);
           }
-          this.logger = new Config.logger.Init({
-            level: this.configuration.configObj.get('logLevel'),
-            transports: Config.logger.transports,
-            filters: [ Config.logger.filter ]
-          });
+          this.logger = CoreHelper.getLogger(this.configuration.configObj.get('logLevel'), 'core');
           this.logger.debug(this.constructor.name, 'Loader#init', 'complete', { from: 'core' });
           next(validationError);
         }
@@ -152,11 +148,8 @@ class Loader {
     // TODO: pass all relevant config files to each service
     this.logger.debug(this.constructor.name, 'Loader#initServices', { from: 'core' });
     Async.each(this.serviceMap.keyArray(), (key, doneServiceInit) => {
-      // INFO: attach a logger to `ServiceGear` object for each service
-      this.serviceMap.get(key).logger = new Config.logger.Init({
-        level: this.configuration.configObj.get('logLevel'),
-        transports: Config.logger.transports
-      });
+      // INFO: attach a logLevel at which system is logging
+      this.serviceMap.get(key).logLevel = this.configuration.configObj.get('logLevel');
       // INFO: step-by-step because constructor must start with capital letter
       let ServiceCreator = this.serviceMap.get(key).Creator;
       let service = new ServiceCreator();
