@@ -1,8 +1,8 @@
 'use strict';
 
 const CollinsError = require('collins-error');
-const Helpers = require('./helpers');
 const CoreHelper = require('collins-core-helper');
+const Helpers = require('./helpers');
 const Async = require('async');
 const Path = require('path');
 const Fs = require('fs');
@@ -26,34 +26,34 @@ class Loader {
    * @param {Function} next Callback function
    */
   static init (next) {
-    Fs.readdir(this.configuration.path, (err, files) => {
+    Fs.readdir(this.dataStore.getPath(), (err, files) => {
       if (err) {
         let readError = CollinsError.convert('Missing:File', err);
         next(readError);
       } else {
         // INFO: filter out unusable files
         // INFO: broke up line below for readbility
-        this.configuration.files = _.filter(
+        this.dataStore.files = _.filter(
           files,
           f => f.split('.')[f.split('.').length - 1] === 'js'
         );
-        let filePresent = _.find(this.configuration.files, f => f === 'index.js');
+        let filePresent = _.find(this.dataStore.files, f => f === 'index.js');
         if (!filePresent) {
           // INFO: 'index.js' was not found, throw error
           let noConfigError = new CollinsError('Missing:Config', {
-            details: `no index.js config path: ${this.configuration.path}`
+            details: `no index.js config path: ${this.dataStore.getPath()}`
           });
           next(noConfigError);
         } else {
-          let configFile = require(Path.join(this.configuration.path, 'index.js'));
-          this.configuration.configObj.load(configFile);
+          let configFile = require(Path.join(this.dataStore.getPath(), 'index.js'));
+          this.dataStore.config.load(configFile);
           let validationError = null;
           try {
-            this.configuration.configObj.validate();
+            this.dataStore.config.validate();
           } catch (e) {
             validationError = CollinsError.convert('Invalid:Config', e);
           }
-          this.logger = CoreHelper.getLogger(this.configuration.configObj.get('logLevel'), 'core');
+          this.logger = CoreHelper.getLogger(this.dataStore.config.get('logLevel'), 'core');
           this.emit('done:init', this);
           this.logger.debug(this.constructor.name, 'Loader#init', 'complete', { from: 'core' });
           next(validationError);
@@ -83,7 +83,7 @@ class Loader {
      *    `[..array..]`
      */
     // TODO: check if variable reference is safe
-    let serviceConfigFiles = Helpers.sortConfigFiles(_(this.configuration.files).pull('index.js'));
+    let serviceConfigFiles = Helpers.sortConfigFiles(_(this.dataStore.files).pull('index.js'));
     // INFO: get list of services attached to this instance
     let serviceNameList = this.serviceMap
       .keyArray()
@@ -103,19 +103,18 @@ class Loader {
       next(noConfigError);
     } else {
       // INFO: we have a corresponding config file for services in instance.
-      // TODO: deal with inheritance in the config files
       // INFO: get name of needed config files
       let neededConfigFiles = _.intersection(serviceNameList, configNameList);
       Async.each(neededConfigFiles, (configName, doneNeededFile) => {
         let filename = Helpers.buildFilename({ service: configName });
-        let serviceConfigPath = Path.join(this.configuration.path, filename);
+        let serviceConfigPath = Path.join(this.dataStore.getPath(), filename);
         // INFO: create javascript object from filepath
         let serviceConfig = require(serviceConfigPath);
         // INFO: check each property from the config and inherit from `this`
         Async.each(Object.keys(serviceConfig), (prop, doneServiceProp) => {
           if (serviceConfig[prop] === 'inherit') {
-            if (this.configuration.configObj.has(prop)) {
-              serviceConfig[prop] = this.configuration.configObj.get(prop);
+            if (this.dataStore.config.has(prop)) {
+              serviceConfig[prop] = this.dataStore.config.get(prop);
               doneServiceProp(null);
             } else {
               let invalidPropError = new CollinsError('Invalid:Config', {
@@ -151,7 +150,7 @@ class Loader {
     this.logger.debug(this.constructor.name, 'Loader#initServices', { from: 'core' });
     Async.each(this.serviceMap.keyArray(), (key, doneServiceInit) => {
       // INFO: attach a logLevel at which system is logging
-      this.serviceMap.get(key).logLevel = this.configuration.configObj.get('logLevel');
+      this.serviceMap.get(key).logLevel = this.dataStore.config.get('logLevel');
       // INFO: step-by-step because constructor must start with capital letter
       let ServiceCreator = this.serviceMap.get(key).Creator;
       let service = new ServiceCreator();

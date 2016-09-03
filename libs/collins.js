@@ -8,13 +8,14 @@
 
 // INFO: collins specific modules
 const ServiceGearWrapper = require('./service-gear-wrapper');
-const Configuration = require('./configuration');
 const CollinsError = require('collins-error');
+const LocalConfig = require('../configs');
+const DataStore = require('collins-core-datastore');
 const Helpers = require('../utils/helpers');
 const Loader = require('../utils/loader');
 
 // INFO: common modules
-const async = require('async');
+const Async = require('async');
 const Emitter = require('eventemitter2').EventEmitter2;
 
 class Collins extends Emitter {
@@ -27,26 +28,42 @@ class Collins extends Emitter {
       for (let k of this.keys()) { r.push(k); }
       return r;
     };
-    this.configuration = new Configuration();
+    // // INFO: create dataStore
+    this.dataStore = new DataStore();
+    // // INFO: load custom formats for schema
+    this.dataStore.loadFormats(LocalConfig.formats);
+    // // INFO: load schema
+    this.dataStore.loadSchema(LocalConfig.schema);
     this.Runtime = require('../utils/Runtime');
     if (dirPath) {
-      this.configuration.setPath(dirPath);
+      this.dataStore.setPath(dirPath);
     }
   }
 
   configure (dirPath) {
+    // INFO: passing `dirPath` here overrides `dirPath` supplied to constructor
     if (dirPath) {
-      this.configuration.setPath(dirPath);
-      this.configuration.configure.call(this);
+      this.dataStore.setPath(dirPath);
     } else {
-      if (!this.configuration.path) {
+      if (!this.dataStore.hasPath()) {
         throw new CollinsError('Missing:Config', {
           details: 'no config path supplied'
         });
-      } else {
-        this.configuration.configure.call(this);
       }
     }
+    Async.series([
+      Loader.init.bind(this),
+      Loader.initConfigs.bind(this),
+      Loader.initServices.bind(this)
+    ], (err, results) => {
+      if (err) {
+        this.logger.error(this.constructor.name, err);
+      }
+      results.forEach((result) => {
+        this.logger.verbose(this.constructor.name, 'core:configure', result);
+      });
+      this.emit('ready', this);
+    });
     return this;
   }
 
@@ -78,7 +95,7 @@ class Collins extends Emitter {
 
   start (callback) {
     this.logger.debug(this.constructor.name, 'Core#start', { from: 'core' });
-    async.series([
+    Async.series([
       Loader.connectServices.bind(this)
       // Loader.initServiceCogs.bind(this),
       // Loader.initActions.bind(this)
