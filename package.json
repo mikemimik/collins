@@ -25,6 +25,8 @@
   "homepage": "https://github.com/mikemimik/collins#readme",
   "dependencies": {
     "async": "^2.0.1",
+    "collins-core-datastore": "github:mikemimik/collins-core-datastore",
+    "collins-core-helper": "github:mikemimik/collins-core-helper",
     "collins-error": "github:mikemimik/collins-error",
     "eventemitter2": "^2.1.0",
     "lodash": "^4.15.0"
