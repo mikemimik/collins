@@ -16,3 +16,10 @@ class ServiceGearWrapper {
 }
 
 module.exports = ServiceGearWrapper;
+
+// TODO: create functions for accessing data on this object
+  // TODO: this.prototype.CreateInstance()
+    // TODO: should return instance AND set this.instance
+  // TODO: this.prototype.setLogger()
+  // TODO: this.prototype.setLogLevel()
+  // TODO: this.prototype.setConfig() / this.prototype.getConfig()
