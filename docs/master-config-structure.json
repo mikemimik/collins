@@ -1,0 +1,18 @@
+{
+  "main": {
+    "name": "Collins",
+    "userAgent": "collins",
+    "logLevel": "info",
+    "services": {
+      "mumble": {
+        "server": "",
+        "password": "",
+        "userAgent": "inherit"
+      },
+      "slack": {
+        "token": "",
+        "userAgent": "inherit"
+      }
+    }
+  }
+}
