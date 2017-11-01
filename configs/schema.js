@@ -1,6 +1,6 @@
 'use strict';
 
-let defaultSchema = {
+const defaultSchema = {
   name: {
     doc: 'Name of this instance of the application',
     format: 'string-nospace',

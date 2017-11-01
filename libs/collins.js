@@ -28,11 +28,11 @@ class Collins extends Emitter {
       for (let k of this.keys()) { r.push(k); }
       return r;
     };
-    // // INFO: create dataStore
+    // INFO: create dataStore
     this.dataStore = new DataStore();
-    // // INFO: load custom formats for schema
+    // INFO: load custom formats for schema
     this.dataStore.loadFormats(LocalConfig.formats);
-    // // INFO: load schema
+    // INFO: load schema
     this.dataStore.loadSchema(LocalConfig.schema);
     this.Runtime = require('../utils/Runtime');
     if (dirPath) {
